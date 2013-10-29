@@ -32,6 +32,10 @@ class SaxHandler extends DefaultHandler {
 	 * Should we record meta data in CDB (names of child elements/attributes)
 	 */
 	private boolean metadata;
+	/**
+	 * Should we trim element content (this removes whitespace only nodes from the tree) 
+	 */
+	private boolean trimWhitespace = false;
 
 	/**
 	 * Create the handler to write to the given CdbMake. This CDB make object
@@ -40,10 +44,12 @@ class SaxHandler extends DefaultHandler {
 	 * @param cdb
 	 *            The CDB make object we will write to
 	 * @param outputMetadata
+	 * @param trimWhitespace 
 	 */
-	public SaxHandler(CdbMake cdb, boolean outputMetadata) {
+	public SaxHandler(CdbMake cdb, boolean outputMetadata, boolean trimWhitespace) {
 		this.cdb = cdb;
 		this.metadata = outputMetadata;
+		this.trimWhitespace = trimWhitespace;
 	}
 
 	@Override
@@ -55,17 +61,6 @@ class SaxHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		characters = new StringBuilder();
-		// if recording meta data
-		if (metadata) {
-			try {
-				// write child element name as a metadata
-				Path metaKey = currentPath.getAttribute(Constants.CHILDREN);
-				System.out.println(metaKey +"="+qName);
-				cdb.add(metaKey.asKey(), qName.getBytes());
-			} catch (IOException e) {
-				throw new SAXException(e);
-			}
-		}		
 		
 		// find out if there is an existing count of this child element
 		String key = currentPath.toString() + "/" + qName;
@@ -73,6 +68,20 @@ class SaxHandler extends DefaultHandler {
 		if (elementCounter.containsKey(key)) {
 			count = elementCounter.get(key);
 		}
+		
+		// if recording meta data
+		if (metadata) {
+			try {
+				// write child element name as a metadata
+				Path metaKey = currentPath.getAttribute(Constants.CHILDREN);
+				System.out.println(metaKey.toString() + "=" + qName + "[" + count+ "]");
+				cdb.add(metaKey.asKey(), qName.getBytes());
+			} catch (IOException e) {
+				throw new SAXException(e);
+			}
+		}		
+		
+		
 		// calculate the new child element name
 		currentPath = currentPath.getChild(qName, count);
 		
@@ -86,12 +95,13 @@ class SaxHandler extends DefaultHandler {
 			ArrayList<String> attrNames = new ArrayList<String>();
 			// write all attributes to the cdb
 			for (int i = 0; i < attributes.getLength(); i++) {
-				String name = attributes.getLocalName(i);
+				String name = attributes.getQName(i);
 				attrNames.add(name);
 				String value = attributes.getValue(i);
 				Path attr = currentPath.getAttribute(name);
 				cdb.add(attr.asKey(),
 						value.getBytes());
+				System.out.println(attr.toString() + "=" + value);
 
 			}
 			// if recording meta data - write out attribute names
@@ -105,7 +115,7 @@ class SaxHandler extends DefaultHandler {
 		} catch (IOException e) {
 			throw new SAXException(e);
 		}
-		System.out.println(currentPath.toString());
+		//System.out.println(currentPath.toString());
 	}
 
 	@Override
@@ -120,19 +130,23 @@ class SaxHandler extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
-		
-		if (characters.length() > 0) {
+		String s = characters.toString();
+		if (trimWhitespace) {
+			s = s.trim();
+		}
+		if (s.length() > 0) {
 			try {
-				cdb.add(currentPath.asKey(), characters.toString()
-						.getBytes());
-				System.out.println(currentPath.toString()+"=\""+characters.toString()+'"');
+				cdb.add(currentPath.asKey(), s.getBytes());
+				System.out.println(currentPath.toString()+"=\""+s.toString()+'"');
 			} catch (IOException e) {
 				
 			}
+			
 		}
 		characters = new StringBuilder();
 		currentPath = currentPath.getParent();
 	}
+
 
 	@Override
 	public void endDocument() throws SAXException {

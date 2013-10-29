@@ -1,6 +1,7 @@
 package com.duckasteroid.ratxml;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.strangegizmo.cdb.Cdb;
@@ -10,7 +11,7 @@ import com.strangegizmo.cdb.Cdb;
  */
 public class Node {
 	protected Cdb cdb;
-	private Path path;
+	protected Path path;
 
 	public Node(Cdb cdb, Path path) {
 		this.cdb = cdb;
@@ -29,6 +30,40 @@ public class Node {
 		return getMetaData(path.getAttribute(Constants.ATTRIBUTES));
 	}
 	
+	public Iterator<Node> getAttributes() {
+		final Iterator<String> attrNameIter = getAttributeNames().iterator();
+		return new Iterator<Node>() {
+			public boolean hasNext() {
+				return attrNameIter.hasNext();
+			}
+			public Node next() {
+				return getChildAttribute(attrNameIter.next());
+			}
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+	
+	public Iterator<Node> getChildren() {
+		final Iterator<String> childNameIter = getChildElements().iterator();
+		return new Iterator<Node>() {
+			public boolean hasNext() {
+				return childNameIter.hasNext();
+			}
+			public Node next() {
+				return new Node(cdb, path.getChildLiteral(childNameIter.next()));
+			}
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+	
+	protected boolean exists() {
+		return cdb.find(path.asKey()) != null;
+	}
+
 	private List<String> getMetaData(Path metaDataKey) {
 		ArrayList<String> children = new ArrayList<String>();
 		String childName = null;
@@ -77,5 +112,4 @@ public class Node {
 	public String toString() {
 		return path.toString();
 	}
-
 }

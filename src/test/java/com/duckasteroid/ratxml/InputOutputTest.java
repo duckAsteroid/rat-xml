@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +26,7 @@ public class InputOutputTest extends TestCase {
 		// ok first up - we write books XML to books.cdb
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("books.xml");
 		File cdbFile = new File("books.cdb");
-		Writer writer = new Writer(cdbFile, true);
+		Writer writer = new Writer(cdbFile, true, false);
 		writer.write(new InputSource(stream));
 		
 		// now we open books.xml again for DOM
@@ -39,6 +40,14 @@ public class InputOutputTest extends TestCase {
 		// now we open books.cdb
 		Cdb cdb = new Cdb(cdbFile); 
 		Reader reader = new Reader(cdb);
+		
+		// test the metadata
+		List<String> childElements = reader.getChildElements();
+		assertNotNull(childElements);
+		assertEquals(1, childElements.size());
+		String firstChild = childElements.get(0);
+		assertEquals(domRoot.getNodeName(), firstChild);
+		
 		Node cdbRoot = reader.getChildElement(domRoot.getNodeName(), 0);
 		
 		// compare trees

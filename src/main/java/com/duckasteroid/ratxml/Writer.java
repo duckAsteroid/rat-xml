@@ -16,14 +16,14 @@ import com.strangegizmo.cdb.CdbMake;
 public class Writer {
 	private XMLReader xmlReader;
 
-	public Writer(File outputFile, boolean outputMetadata) throws ParserConfigurationException, SAXException, IOException {
+	public Writer(File outputFile, boolean outputMetadata, boolean trimWhitespace) throws ParserConfigurationException, SAXException, IOException {
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 	    //spf.setNamespaceAware(true);
 		SAXParser saxParser = spf.newSAXParser();
 		xmlReader = saxParser.getXMLReader();
 		CdbMake cdb = new CdbMake();
 		cdb.start(outputFile);
-		xmlReader.setContentHandler(new SaxHandler(cdb, outputMetadata));
+		xmlReader.setContentHandler(new SaxHandler(cdb, outputMetadata, trimWhitespace));
 	}
 	
 	public void write(InputSource xml) throws IOException, SAXException {

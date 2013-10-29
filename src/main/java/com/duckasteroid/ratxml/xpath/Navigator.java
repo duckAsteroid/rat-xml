@@ -1,6 +1,10 @@
 package com.duckasteroid.ratxml.xpath;
 
+import java.util.Iterator;
+
+import org.jaxen.BaseXPath;
 import org.jaxen.DefaultNavigator;
+import org.jaxen.UnsupportedAxisException;
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 
@@ -13,6 +17,43 @@ public class Navigator extends DefaultNavigator {
 
 	private static final long serialVersionUID = 984597718554121056L;
 
+	
+	@Override
+	public Iterator<?> getAttributeAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		Node ctx = (Node)contextNode;
+		return ctx.getAttributes();
+	}
+	
+	@Override
+	public Iterator<?> getChildAxisIterator(Object contextNode)
+			throws UnsupportedAxisException {
+		Node ctx = (Node)contextNode;
+		return ctx.getChildren();
+	}
+	
+	@Override
+	public Iterator<?> getParentAxisIterator(final Object contextNode)
+			throws UnsupportedAxisException {
+		return new Iterator<Node>() {
+			Node ctx = (Node) contextNode;	
+			public boolean hasNext() {
+				return false; // FIXME *******************************
+				//return ctx.getParent();
+			}
+
+			public Node next() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public void remove() {
+				throw new UnsupportedOperationException();				
+			}			
+		};
+	}
+	
+	
 	public String getAttributeName(Object o) {
 		return ((Node)o).getName();
 	}
@@ -91,8 +132,9 @@ public class Navigator extends DefaultNavigator {
 	}
 
 	public XPath parseXPath(String o) throws SAXPathException {
-		// TODO Auto-generated method stub
-		return null;
+		return new BaseXPath(o, this);
 	}
+	
+	
 
 }

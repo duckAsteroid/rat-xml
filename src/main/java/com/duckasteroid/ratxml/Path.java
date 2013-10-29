@@ -9,6 +9,10 @@ public class Path {
 	public Path(String path) {
 		this.path = path;
 	}
+	
+	public Path getChildLiteral(String subPath) {
+		return new Path(path +"/" + subPath);
+	}
 
 	public Path getChild(String name, int index) {
 		if (index < 0) {

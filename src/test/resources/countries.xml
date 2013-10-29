@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<world>
+    <continent id="1">
+        <name>Africa</name>
+        <country id="1.1">
+            <name>Algeria</name>
+            <city id="1.1.1" capital="true">
+                <name>Algiers</name>
+            </city>
+            <city id="1.1.2">
+                <name>Oran</name>
+            </city>
+            <city id="1.1.3">
+                <name>Constantine</name>
+            </city>
+        </country>
+        <country id="1.2">
+            <name>The Gambia</name>
+            <city id="1.2.1">
+                <name>Banjul</name>
+            </city>
+            <city id="1.2.2">
+                <name>Serekunda</name>
+            </city>
+            <city id="1.2.3">
+                <name>Brikama</name>
+            </city>
+        </country>
+    </continent>
+    <continent id="3">
+        <name>Europe</name>
+        <country id="3.1">
+            <name>United Kingdom of Great Britain &amp; Northern Ireland</name>
+            <city id="3.1.1" capital="true">
+                <name>London</name>
+			</city>
+			<city id="3.1.2">
+                <name>Manchester</name>
+			</city>
+			<city id="3.1.3">
+                <name>Edinburgh</name>
+			</city>
+        </country>
+        <country id="3.2">
+            <name>Belgium</name>
+            <city id="3.2.1">
+                <name>Antwerp</name>
+            </city>
+            <city id="3.2.2">
+                <name>Ghent</name>
+            </city>
+            <city id="3.2.3">
+                <name>Leuven</name>
+            </city>
+        </country>
+    </continent>
+    <continent id="5">
+        <name>Australia</name>
+        <country id="5.1">
+            <name>New Zealand</name>
+            <city id="5.1.1" capital="true">
+                <name>Wellington</name>
+            </city>
+            <city id="5.1.2">
+                <name>Auckland</name>
+            </city>
+        </country>
+    </continent>
+</world>
