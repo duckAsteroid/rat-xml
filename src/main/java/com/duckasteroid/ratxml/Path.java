@@ -22,13 +22,15 @@ public class Path {
 	}
 	
 	public String getName() {
+		// find the end of the name
 		int index = path.lastIndexOf('#');
 		if (index < 0) {
 			index  = path.lastIndexOf('/');
 		}
 		if (index < 0) {
-			return null; // Root
+			return null; // Root has no name
 		}
+		// look for [index] syntax
 		int end = path.indexOf('[', index);
 		if (end < 0) {
 			end = path.length();

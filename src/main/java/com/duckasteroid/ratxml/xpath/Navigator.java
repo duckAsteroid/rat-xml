@@ -9,6 +9,7 @@ import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 
 import com.duckasteroid.ratxml.Node;
+import com.duckasteroid.ratxml.Reader;
 
 /**
  * This class provides a Jaxen navigator over RAT-XML Node instances
@@ -38,21 +39,34 @@ public class Navigator extends DefaultNavigator {
 		return new Iterator<Node>() {
 			Node ctx = (Node) contextNode;	
 			public boolean hasNext() {
-				return false; // FIXME *******************************
-				//return ctx.getParent();
+				return ctx.getParent() != null;
 			}
-
 			public Node next() {
-				// TODO Auto-generated method stub
-				return null;
+				return ctx.getParent();
 			}
-
 			public void remove() {
 				throw new UnsupportedOperationException();				
 			}			
 		};
 	}
 	
+	@Override
+	public Object getParentNode(Object contextNode)
+			throws UnsupportedAxisException {
+		Node ctx = (Node)contextNode;
+		return ctx.getParent();
+	}
+	
+	@Override
+	public Object getDocumentNode(Object contextNode) {
+		if (contextNode instanceof Reader) {
+			return contextNode;
+		}
+		else if(contextNode instanceof Node) {
+			return ((Node)contextNode).getOwnerDocument();
+		}
+		return null;
+	}
 	
 	public String getAttributeName(Object o) {
 		return ((Node)o).getName();
@@ -91,19 +105,25 @@ public class Navigator extends DefaultNavigator {
 	}
 
 	public String getNamespacePrefix(Object o) {
-		return "";
+		return null;
 	}
 
 	public String getNamespaceStringValue(Object o) {
-		return "";
+		return null;
 	}
 
 	public String getTextStringValue(Object o) {
-		return ((Node)o).getText();
+		if (o instanceof Node) {
+			return ((Node)o).getText();
+		}
+		return o.toString();
 	}
 
 	public boolean isAttribute(Object o) {
-		return ((Node)o).isAttribute();
+		if (o instanceof Node) {
+			return ((Node)o).isAttribute();
+		}
+		return false;
 	}
 
 	public boolean isComment(Object o) {
@@ -112,11 +132,14 @@ public class Navigator extends DefaultNavigator {
 
 	public boolean isDocument(Object o) {
 		//return ((Node)o).isRoot();
-		return false;
+		return (o instanceof Reader);
 	}
 
 	public boolean isElement(Object o) {
-		return !((Node)o).isAttribute();
+		if (o instanceof Node) {
+			return !((Node)o).isAttribute();
+		}
+		return false;
 	}
 
 	public boolean isNamespace(Object o) {
@@ -128,7 +151,7 @@ public class Navigator extends DefaultNavigator {
 	}
 
 	public boolean isText(Object o) {
-		return false;
+		return (o instanceof String);
 	}
 
 	public XPath parseXPath(String o) throws SAXPathException {

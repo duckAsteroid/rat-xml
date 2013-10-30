@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import org.jaxen.BaseXPath;
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 import org.xml.sax.InputSource;
 
 import com.duckasteroid.ratxml.xpath.Navigator;
+import com.duckasteroid.ratxml.xpath.RatXPath;
 import com.strangegizmo.cdb.Cdb;
 
 import junit.framework.TestCase;
@@ -37,9 +39,8 @@ public class XPathTest extends TestCase {
 		ratXml = null;
 	}
 	
-	public void test() throws SAXPathException {
-		Navigator n = new Navigator();
-		XPath xPath = n.parseXPath(SELECT_MANCHESTER);
+	public void testXPath() throws SAXPathException {
+		XPath xPath = new RatXPath(SELECT_MANCHESTER);
 		List<?> nodes = xPath.selectNodes(ratXml);
 		assertNotNull(nodes);
 		assertEquals(1, nodes.size());

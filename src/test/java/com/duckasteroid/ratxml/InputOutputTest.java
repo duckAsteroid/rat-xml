@@ -46,7 +46,7 @@ public class InputOutputTest extends TestCase {
 		assertNotNull(childElements);
 		assertEquals(1, childElements.size());
 		String firstChild = childElements.get(0);
-		assertEquals(domRoot.getNodeName(), firstChild);
+		assertEquals(domRoot.getNodeName() + "[0]", firstChild);
 		
 		Node cdbRoot = reader.getChildElement(domRoot.getNodeName(), 0);
 		
@@ -86,10 +86,8 @@ public class InputOutputTest extends TestCase {
 		}
 		
 		// text content
-		assertEquals(xmlNormalise(text.toString()), xmlNormalise(cdb.getText()));
-		
+		assertEquals(xmlNormalise(text.toString()), xmlNormalise(cdb.getText()));	
 	}
-
 	
 	private static String xmlNormalise(String src) {
 		src = src.replaceAll("\\n", " ");

@@ -16,7 +16,7 @@ public class RatXmlConverter {
 			throw new IllegalArgumentException("Required 2 args: XML input file, rat-xml output file");
 		File input = new File(args[0]);
 		File output = new File(args[1]);
-		Writer w = new Writer(output, true);
+		Writer w = new Writer(output, true, true);
 		InputSource xml = new InputSource(new FileInputStream(input));
 		w.write(xml);
 	}

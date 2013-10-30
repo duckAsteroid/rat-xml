@@ -74,8 +74,9 @@ class SaxHandler extends DefaultHandler {
 			try {
 				// write child element name as a metadata
 				Path metaKey = currentPath.getAttribute(Constants.CHILDREN);
-				System.out.println(metaKey.toString() + "=" + qName + "[" + count+ "]");
-				cdb.add(metaKey.asKey(), qName.getBytes());
+				String childName = qName + "[" + count+ "]";
+				System.out.println(metaKey.toString() + "=" + childName);
+				cdb.add(metaKey.asKey(), childName.getBytes());
 			} catch (IOException e) {
 				throw new SAXException(e);
 			}
