@@ -3,6 +3,8 @@ package com.duckasteroid.ratxml;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -15,6 +17,8 @@ import com.strangegizmo.cdb.CdbMake;
  * This is the principle class responsible for writing the RatXML file format.
  */
 class SaxHandler extends DefaultHandler {
+	/** Logger for debug */
+	private final static Logger LOG = Logger.getLogger(SaxHandler.class.getName()); 
 	/** A CDB make instance we will write XML key pairs to */
 	private CdbMake cdb;
 	/** Track the current path (e.g. for text nodes) */
@@ -77,7 +81,9 @@ class SaxHandler extends DefaultHandler {
 				// write child element name as a metadata
 				Path metaKey = currentPath.getMetaData(Constants.CHILDREN);
 				String childName = qName + "[" + count+ "]";
-				System.out.println(metaKey.toString() + "=" + childName);
+				if (LOG.isLoggable(Level.FINE)) {
+					LOG.fine(metaKey.toString() + "=" + childName);
+				}
 				cdb.add(metaKey.asKey(), childName.getBytes());
 			} catch (IOException e) {
 				throw new SAXException(e);
@@ -104,21 +110,23 @@ class SaxHandler extends DefaultHandler {
 				Path attr = currentPath.getAttribute(name);
 				cdb.add(attr.asKey(),
 						value.getBytes());
-				System.out.println(attr.toString() + "=" + value);
-
+				if (LOG.isLoggable(Level.FINE)) {
+					LOG.fine(attr.toString() + "=" + value);
+				}
 			}
 			// if recording meta data - write out attribute names
 			if (metadata) {
 				Path attrKey = currentPath.getMetaData(Constants.ATTRIBUTES);
 				for (String attr : attrNames) {
 					cdb.add(attrKey.asKey(), attr.getBytes());
-					System.out.println(attrKey.toString() + "=" + attr);
+					if (LOG.isLoggable(Level.FINE)) {
+						LOG.fine(attrKey.toString() + "=" + attr);
+					}
 				}
 			}
 		} catch (IOException e) {
 			throw new SAXException(e);
 		}
-		//System.out.println(currentPath.toString());
 	}
 
 	@Override
@@ -140,7 +148,9 @@ class SaxHandler extends DefaultHandler {
 		if (s.length() > 0) {
 			try {
 				cdb.add(currentPath.asKey(), s.getBytes());
-				System.out.println(currentPath.toString()+"=\""+s.toString()+'"');
+				if (LOG.isLoggable(Level.FINE)) {
+					LOG.fine(currentPath.toString()+"=\""+s.toString()+'"');
+				}
 			} catch (IOException e) {
 				
 			}

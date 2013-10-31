@@ -30,12 +30,15 @@
  * SUCH DAMAGE.
  */
 
-package com.strangegizmo.cdb;
+package com.duckasteroid.ratxml;
 
 /* Java imports. */
 import java.io.IOException;
 import java.util.Enumeration;
 /* strangeGizmo imports. */
+
+import com.strangegizmo.cdb.Cdb;
+import com.strangegizmo.cdb.CdbElement;
 
 /**
  * The cdb.dump program is a command-line tool which is used to dump the
@@ -44,7 +47,7 @@ import java.util.Enumeration;
  * @author		Michael Alyn Miller <malyn@strangeGizmo.com>
  * @version		1.0.4
  */
-public class dump {
+public class Dump {
 	public static void main(String[] args) {
 		/* Display a usage message if we didn't get the correct number
 		 * of arguments. */
