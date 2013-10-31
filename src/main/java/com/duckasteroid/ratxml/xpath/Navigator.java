@@ -9,10 +9,10 @@ import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 
 import com.duckasteroid.ratxml.Node;
-import com.duckasteroid.ratxml.Reader;
+import com.duckasteroid.ratxml.Document;
 
 /**
- * This class provides a Jaxen navigator over RAT-XML Node instances
+ * This class provides a Jaxen navigator over RAT-XML {@link Node} instances
  */
 public class Navigator extends DefaultNavigator {
 
@@ -59,7 +59,7 @@ public class Navigator extends DefaultNavigator {
 	
 	@Override
 	public Object getDocumentNode(Object contextNode) {
-		if (contextNode instanceof Reader) {
+		if (contextNode instanceof Document) {
 			return contextNode;
 		}
 		else if(contextNode instanceof Node) {
@@ -132,7 +132,7 @@ public class Navigator extends DefaultNavigator {
 
 	public boolean isDocument(Object o) {
 		//return ((Node)o).isRoot();
-		return (o instanceof Reader);
+		return (o instanceof Document);
 	}
 
 	public boolean isElement(Object o) {

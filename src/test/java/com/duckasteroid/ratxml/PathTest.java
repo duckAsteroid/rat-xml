@@ -25,7 +25,7 @@ public class PathTest extends TestCase {
 
 	public void testGetAttribute() {
 		subject = abc.getAttribute("wibble");
-		assertEquals(PATH + "#wibble", subject.toString());
+		assertEquals(PATH + "@wibble", subject.toString());
 	}
 
 	public void testAsKey() {

@@ -33,8 +33,14 @@
 package com.strangegizmo.cdb;
 
 /* Java imports. */
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * CdbMake implements the database-creation side of

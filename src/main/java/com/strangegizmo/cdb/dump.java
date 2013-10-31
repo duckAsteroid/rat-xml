@@ -33,11 +33,9 @@
 package com.strangegizmo.cdb;
 
 /* Java imports. */
-import java.io.*;
-import java.util.*;
-
+import java.io.IOException;
+import java.util.Enumeration;
 /* strangeGizmo imports. */
-import com.strangegizmo.cdb.*;
 
 /**
  * The cdb.dump program is a command-line tool which is used to dump the

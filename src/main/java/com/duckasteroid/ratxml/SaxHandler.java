@@ -11,12 +11,13 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.strangegizmo.cdb.CdbMake;
 
 /**
- * A SAX event handler that will write XML elements & attributes as keys to CDB as they are encountered
+ * A SAX event handler that will write XML elements & attributes as keys to CDB as they are encountered.
+ * This is the principle class responsible for writing the RatXML file format.
  */
 class SaxHandler extends DefaultHandler {
-	/** A CDB make we will write XML key pairs to */
+	/** A CDB make instance we will write XML key pairs to */
 	private CdbMake cdb;
-
+	/** Track the current path (e.g. for text nodes) */
 	private Path currentPath = Path.ROOT;
 
 	/**
@@ -24,16 +25,17 @@ class SaxHandler extends DefaultHandler {
 	 */
 	private HashMap<String, Integer> elementCounter = new HashMap<String, Integer>();
 	/**
-	 * This is used to track character data in the current element
+	 * This is used to track/build character data in the current element
 	 */
 	private StringBuilder characters = null;
 
 	/**
 	 * Should we record meta data in CDB (names of child elements/attributes)
+	 * Doing any kind of XPath later requires it
 	 */
 	private boolean metadata;
 	/**
-	 * Should we trim element content (this removes whitespace only nodes from the tree) 
+	 * Should we trim element content (this also removes whitespace-only nodes from the tree) 
 	 */
 	private boolean trimWhitespace = false;
 
@@ -73,7 +75,7 @@ class SaxHandler extends DefaultHandler {
 		if (metadata) {
 			try {
 				// write child element name as a metadata
-				Path metaKey = currentPath.getAttribute(Constants.CHILDREN);
+				Path metaKey = currentPath.getMetaData(Constants.CHILDREN);
 				String childName = qName + "[" + count+ "]";
 				System.out.println(metaKey.toString() + "=" + childName);
 				cdb.add(metaKey.asKey(), childName.getBytes());
@@ -107,7 +109,7 @@ class SaxHandler extends DefaultHandler {
 			}
 			// if recording meta data - write out attribute names
 			if (metadata) {
-				Path attrKey = currentPath.getAttribute(Constants.ATTRIBUTES);
+				Path attrKey = currentPath.getMetaData(Constants.ATTRIBUTES);
 				for (String attr : attrNames) {
 					cdb.add(attrKey.asKey(), attr.getBytes());
 					System.out.println(attrKey.toString() + "=" + attr);

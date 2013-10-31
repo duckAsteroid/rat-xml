@@ -13,20 +13,43 @@ import org.xml.sax.XMLReader;
 
 import com.strangegizmo.cdb.CdbMake;
 
+/**
+ * Used to write XML data to a Rat XML file.
+ */
 public class Writer {
+	
 	private XMLReader xmlReader;
+	private CdbMake cdb;
+	private boolean outputMetadata;
+	private boolean trimWhitespace;
 
-	public Writer(File outputFile, boolean outputMetadata, boolean trimWhitespace) throws ParserConfigurationException, SAXException, IOException {
+	/**
+	 * Create a writer to output Rat XML data 
+	 * @param outputFile A file where the Rat XML will be written. If this file exists it will be overwritten.
+	 * @param outputMetadata A flag to indicate if metadata is to be included in the output. This is required if XPath processing is to be performed later
+	 * @param trimWhitespace A flag to indicate if whitespace should be removed from the output. This also removes "empty" (whitespace only) elements from the output.
+	 * @throws IOException If there is a problem writing to the 
+	 */
+	public Writer(File outputFile, boolean outputMetadata, boolean trimWhitespace) throws IOException {
+		this.cdb = new CdbMake();
+		this.cdb.start(outputFile);
+		this.outputMetadata = outputMetadata;
+		this.trimWhitespace = trimWhitespace;		
+	}
+	/**
+	 * Process a given XML document and write it to the rat XML file. This method can only be called once.
+	 * @param xml An input source containing the XML data to write to the rat xml file
+	 * @throws IOException If there is a problem reading XML or writing rat XML
+	 * @throws SAXException If there is a problem reading the XML
+	 * @throws ParserConfigurationException If there is a problem creating a SAX parser for the XML
+	 */
+	public void write(InputSource xml) throws IOException, SAXException, ParserConfigurationException {
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 	    //spf.setNamespaceAware(true);
 		SAXParser saxParser = spf.newSAXParser();
 		xmlReader = saxParser.getXMLReader();
-		CdbMake cdb = new CdbMake();
-		cdb.start(outputFile);
 		xmlReader.setContentHandler(new SaxHandler(cdb, outputMetadata, trimWhitespace));
-	}
-	
-	public void write(InputSource xml) throws IOException, SAXException {
 		xmlReader.parse(xml);
+		
 	}
 }

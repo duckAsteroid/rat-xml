@@ -4,22 +4,19 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import org.jaxen.BaseXPath;
+import junit.framework.TestCase;
+
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 import org.xml.sax.InputSource;
 
-import com.duckasteroid.ratxml.xpath.Navigator;
 import com.duckasteroid.ratxml.xpath.RatXPath;
-import com.strangegizmo.cdb.Cdb;
-
-import junit.framework.TestCase;
 
 public class XPathTest extends TestCase {
 	public static final String SELECT_MANCHESTER = "//world/continent/country/city[name='Manchester']";
 	public static final String SELECT_UK_CITIES = "//world/continent/country[@id='3.1']/city";
 	
-	private Reader ratXml;
+	private Document ratXml;
 	@Override
 	protected void setUp() throws Exception {
 		// convert countries XML to RAT-XML
@@ -29,8 +26,7 @@ public class XPathTest extends TestCase {
 		writer.write(new InputSource(stream));
 		
 		// read the rat-xml 
-		Cdb cdb = new Cdb(cdbFile); 
-		ratXml = new Reader(cdb);
+		ratXml = new Document(cdbFile);
 	}
 	
 	@Override
@@ -45,7 +41,7 @@ public class XPathTest extends TestCase {
 		assertNotNull(nodes);
 		assertEquals(1, nodes.size());
 		Node manchester = (Node) nodes.get(0);
-		assertEquals("3.1.2", manchester.getAttribute("id"));
+		assertEquals("3.1.2", manchester.getAttributeValue("id"));
 	}
 	
 }

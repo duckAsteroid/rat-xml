@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import org.xml.sax.InputSource;
-
-import com.strangegizmo.cdb.Cdb;
-
 import junit.framework.TestCase;
 
+import org.xml.sax.InputSource;
+
 public class NodeTest extends TestCase {
-	private Reader ratXml;
+	private Document ratXml;
 	Node subject;
 	
 	@Override
@@ -23,8 +21,7 @@ public class NodeTest extends TestCase {
 		writer.write(new InputSource(stream));
 		
 		// read the rat-xml 
-		Cdb cdb = new Cdb(cdbFile); 
-		ratXml = new Reader(cdb);
+		ratXml = new Document(cdbFile);
 	}
 	
 	@Override
@@ -47,17 +44,17 @@ public class NodeTest extends TestCase {
 		subject = children.next();
 		assertNotNull(subject);
 		assertEquals("continent", subject.getName());
-		assertEquals("1", subject.getAttribute("id"));
+		assertEquals("1", subject.getAttributeValue("id"));
 		assertTrue(children.hasNext());
 		subject = children.next();
 		assertNotNull(subject);
 		assertEquals("continent", subject.getName());
-		assertEquals("3", subject.getAttribute("id"));
+		assertEquals("3", subject.getAttributeValue("id"));
 		assertTrue(children.hasNext());
 		subject = children.next();
 		assertNotNull(subject);
 		assertEquals("continent", subject.getName());
-		assertEquals("5", subject.getAttribute("id"));
+		assertEquals("5", subject.getAttributeValue("id"));
 		assertFalse(children.hasNext());
 	}
 }

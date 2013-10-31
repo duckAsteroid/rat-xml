@@ -12,13 +12,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
-import org.w3c.dom.Document;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.strangegizmo.cdb.Cdb;
 
 public class InputOutputTest extends TestCase {
 
@@ -33,13 +31,12 @@ public class InputOutputTest extends TestCase {
 		stream = getClass().getClassLoader().getResourceAsStream("books.xml");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(stream);
+		org.w3c.dom.Document doc = dBuilder.parse(stream);
 		Element domRoot = doc.getDocumentElement();
 		domRoot.normalize();
 		
 		// now we open books.cdb
-		Cdb cdb = new Cdb(cdbFile); 
-		Reader reader = new Reader(cdb);
+		Document reader = new Document(cdbFile);
 		
 		// test the metadata
 		List<String> childElements = reader.getChildElements();
@@ -65,7 +62,7 @@ public class InputOutputTest extends TestCase {
 			org.w3c.dom.Node child = childNodes.item(i);
 			switch(child.getNodeType()) {
 			case org.w3c.dom.Node.ATTRIBUTE_NODE :
-				assertEquals("Attribute '"+child.getNodeName()+"'", child.getNodeValue(), cdb.getAttribute(child.getNodeName()));
+				assertEquals("Attribute '"+child.getNodeName()+"'", child.getNodeValue(), cdb.getAttributeValue(child.getNodeName()));
 				break;
 			case org.w3c.dom.Node.ELEMENT_NODE :
 				String childName = child.getNodeName();
