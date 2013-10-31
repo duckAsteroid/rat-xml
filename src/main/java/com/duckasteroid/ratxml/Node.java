@@ -2,29 +2,32 @@ package com.duckasteroid.ratxml;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.strangegizmo.cdb.Cdb;
 
 /**
  * This represents the read interface to data in the rat-xml. It is something equivalent
  * to the Node in DOM. It represents data in elements and attributes.
  */
 public class Node {
-	protected Document document;
-	protected Path path;
-
-	protected Node(Path path) {
-		this.path = path;
-	}
+	protected Node parent;
+	protected Cdb cdb;
+	protected Key key;
+	protected String name;
 	
 	/**
 	 * Create the node in the given document and at the given path
 	 * @param document The owner Rat XML document 
 	 * @param path The path into the document
 	 */
-	public Node(Document document, Path path) {
-		this.document = document;
-		this.path = path;
+	public Node(Cdb cdb, Key key, Node parent,  String name) {
+		this.cdb = cdb;
+		this.parent = parent;
+		this.key = key;
+		this.name = name;
 	}
 
 	/**
@@ -32,7 +35,11 @@ public class Node {
 	 * @return The node name
 	 */
 	public String getName() {
-		return path.getName();
+		int endIndex = name.lastIndexOf('[');
+		if (endIndex < 0) {
+			endIndex = name.length();
+		}
+		return name.substring(0, endIndex);
 	}
 	
 	/**
@@ -40,7 +47,10 @@ public class Node {
 	 * @return The document of this node
 	 */
 	public Document getOwnerDocument() {
-		return document;
+		if (parent instanceof Document) {
+			return (Document)parent;
+		}
+		return parent.getOwnerDocument();
 	}
 	
 	/**
@@ -48,110 +58,80 @@ public class Node {
 	 * @return The parent or <code>null</code> if this is the root/document
 	 */
 	public Node getParent() {
-		Path parentPath =  path.getParent();
-		if (parentPath == null) {
-			return null;
-		}
-		return new Node(document, parentPath);
+		return parent;
 	}
 
 	/**
-	 * Get the names of the child elements of this node in metadata form.
-	 * These names include an "index" (e.g. <code>foo[0]</code> or <code>foo[12]</code>) 
+	 * Get the child elements of this node. 
 	 * @return The names of the child elements, if any. The list may be empty but never <code>null</code>.
 	 */
-	public List<String> getChildElements() {
-		return getMetaData(path.getMetaData(Constants.CHILDREN));
+	public Map<String, Node> getChildElements() {
+		final HashMap<String, Node> children = new HashMap<String, Node>();
+		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
+			public void handle(String name, long id) {
+				children.put(name, new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+			}
+		});
+		return children;
+	}
+	
+	public List<Node> getOrderedChildElements() {
+		final ArrayList<Node> children = new ArrayList<Node>();
+		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
+			public void handle(String name, long id) {
+				children.add(new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+			}
+		});
+		if (children.size() > 1) {
+			Collections.reverse(children);
+		}		
+		return children;
 	}
 	
 	/**
-	 * Get the names of the attributes on this node. 
+	 * Get the attributes on this node. 
 	 * If this node is an attribute or a document, the list will be empty. 
 	 * @return A list of attribute names (if any). List may be empty but never <code>null</code>.
 	 */
-	public List<String> getAttributeNames() {
-		return getMetaData(path.getMetaData(Constants.ATTRIBUTES));
+	public Map<String, Node> getAttributes() {
+		final HashMap<String, Node> result = new HashMap<String, Node>();
+		processMetaData(key.getAttributeMetaDataKey(), new MetaDataHandler() {
+			public void handle(String name, long id) {
+				Node n = new Node(cdb, Key.createAttributeDataKey(id), Node.this, name);
+				result.put(name, n);
+			}
+		});
+		return result;
 	}
-	
-	/**
-	 * Get a node iterator over the attributes (if any)
-	 * @return An iterator over the attributes
-	 */
-	public Iterator<Node> getAttributes() {
-		final Iterator<String> attrNameIter = getAttributeNames().iterator();
-		return new Iterator<Node>() {
-			public boolean hasNext() {
-				return attrNameIter.hasNext();
-			}
-			public Node next() {
-				return getAttributeNode(attrNameIter.next());
-			}
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
+
+	private interface MetaDataHandler {
+		public void handle(String name, long id);
 	}
-	
-	/**
-	 * Get a node iterator over the children (if any)
-	 * @return An iterator over the child elements
-	 */
-	public Iterator<Node> getChildren() {
-		final Iterator<String> childNameIter = getChildElements().iterator();
-		return new Iterator<Node>() {
-			public boolean hasNext() {
-				return childNameIter.hasNext();
-			}
-			public Node next() {
-				return new Node(document, path.getChildLiteral(childNameIter.next()));
-			}
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
-	
 	/**
 	 * A utility method to gather together all values for a given meta data key
 	 * @param metaDataKey The key to retrieve
 	 * @return A list of all values in that meta data key.
 	 */
-	private List<String> getMetaData(Path metaDataKey) {
-		ArrayList<String> children = new ArrayList<String>();
-		String childName = null;
+	private void processMetaData(Key metaDataKey, MetaDataHandler handler) {
+		String metaData = null;
 		byte[] b = null;
 		do {
 			if (b == null) {
-				b = document.cdb.find(metaDataKey.asKey());
+				b = cdb.find(metaDataKey.value);
 			}
 			else {
-				b = document.cdb.findnext(metaDataKey.asKey());
+				b = cdb.findnext(metaDataKey.value);
 			}
 			if (b == null) {
-				childName = null;
+				metaData = null;
 			} else {
-				childName = new String(b);
-				children.add(childName);
+				metaData = new String(b);
+				String[] element = metaData.split(":");
+				handler.handle(element[0], Long.parseLong(element[1]));
 			}
-		} while (childName != null);
+		} while (metaData != null);
 
-		// order from CDB is reverse of order added
-		Collections.reverse(children);
-		return children;
-	}
 
-	/**
-	 * Get the value of the given attribute.
-	 * @param attr The name of the attribute on this node
-	 * @return The value of the attribute if it exists or <code>null</code> if there is no such attribute.
-	 */
-	public String getAttributeValue(String attr) {
-		Path key = path.getAttribute(attr);
-		byte[] data = document.cdb.find(key.asKey());
-		if (data == null) {
-			return null;
-		}
-		return new String(data);
 	}
 
 	/**
@@ -159,26 +139,22 @@ public class Node {
 	 * @return The text in this element
 	 */
 	public String getText() {
-		byte[] data = document.cdb.find(path.asKey());
+		byte[] data = cdb.find(key.value);
 		if (data == null) {
 			return "";
 		}
 		return new String(data);
 	}
-
-	public Node getChildElement(String name, Integer index) {
-		return new Node(document, path.getChild(name, index));
-	}
-	
-	public Node getAttributeNode(String name) {
-		return new Node(document, path.getAttribute(name));
-	}
 	
 	public boolean isAttribute() {
-		return path.isAttribute();
+		return key.getType() == Key.TYPE_ATTRIBUTE;
 	}
 
 	public String toString() {
-		return Node.class.getName()+"{"+path.toString()+"}";
+		return Node.class.getName()+"{"+key.toString()+"}";
+	}
+
+	public String getAttributeValue(String key) {
+		return getAttributes().get(key).getText();
 	}
 }

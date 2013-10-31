@@ -3,6 +3,7 @@ package com.duckasteroid.ratxml;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
+
 
 
 import org.w3c.dom.Element;
@@ -24,7 +26,7 @@ public class InputOutputTest extends TestCase {
 		// ok first up - we write books XML to books.cdb
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("books.xml");
 		File cdbFile = new File("books.cdb");
-		Writer writer = new Writer(cdbFile, true, false);
+		Writer writer = new Writer(cdbFile, false);
 		writer.write(new InputSource(stream));
 		
 		// now we open books.xml again for DOM
@@ -39,16 +41,14 @@ public class InputOutputTest extends TestCase {
 		Document reader = new Document(cdbFile);
 		
 		// test the metadata
-		List<String> childElements = reader.getChildElements();
+		Collection<Node> childElements = reader.getChildElements().values();
 		assertNotNull(childElements);
 		assertEquals(1, childElements.size());
-		String firstChild = childElements.get(0);
-		assertEquals(domRoot.getNodeName() + "[0]", firstChild);
-		
-		Node cdbRoot = reader.getChildElement(domRoot.getNodeName(), 0);
+		Node firstChild = childElements.iterator().next();
+		assertEquals(domRoot.getNodeName() + "[0]", firstChild.name);
 		
 		// compare trees
-		compareNode(domRoot, cdbRoot);
+		compareNode(domRoot, firstChild);
 	}
 	
 	private static void compareNode(Element dom, Node cdb)  {
@@ -62,7 +62,8 @@ public class InputOutputTest extends TestCase {
 			org.w3c.dom.Node child = childNodes.item(i);
 			switch(child.getNodeType()) {
 			case org.w3c.dom.Node.ATTRIBUTE_NODE :
-				assertEquals("Attribute '"+child.getNodeName()+"'", child.getNodeValue(), cdb.getAttributeValue(child.getNodeName()));
+				Node attr = cdb.getAttributes().get(child.getNodeName());
+				assertEquals("Attribute '"+child.getNodeName()+"'", child.getNodeValue(), attr.getText());
 				break;
 			case org.w3c.dom.Node.ELEMENT_NODE :
 				String childName = child.getNodeName();
@@ -70,7 +71,7 @@ public class InputOutputTest extends TestCase {
 				if (counter.containsKey(childName)) {
 					count = counter.get(childName);
 				}
-				compareNode((Element)child, cdb.getChildElement(childName, count));
+				compareNode((Element)child, cdb.getChildElements().get(childName +"["+count+"]"));
 				counter.put(childName, ++count);
 				break;
 			case org.w3c.dom.Node.TEXT_NODE :

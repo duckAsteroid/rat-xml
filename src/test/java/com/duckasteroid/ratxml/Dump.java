@@ -73,7 +73,7 @@ public class Dump {
 				 * perform. */
 				System.out.write(
 					("+" + key.length + "," + data.length + ":").getBytes());
-				System.out.write(key);
+				System.out.write(new Key(key).toString().getBytes());
 				System.out.write('-');
 				System.out.write('>');
 				System.out.write(data);

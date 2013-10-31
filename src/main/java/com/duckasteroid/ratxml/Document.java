@@ -11,20 +11,14 @@ import com.strangegizmo.cdb.Cdb;
  * and must be therefore <b>explicitly</b> {@link #close() closed}!
  */
 public class Document extends Node {
-	/**
-	 * The underlying CDB file that we read from.
-	 * Note: package access for speed when used in {@link Node}
-	 */
-	Cdb cdb;
+
 	/**
 	 * Create a rat XML document given a file to read data from
 	 * @param inputFile The rat XML file to read from
 	 * @throws IOException If there is a problem reading the rat XML file
 	 */
 	public Document(File inputFile) throws IOException {
-		super(Path.ROOT);
-		this.cdb = new Cdb(inputFile);
-		this.document = this;
+		super(new Cdb(inputFile), Key.createElementDataKey(0), null, null);
 	}
 	
 	/**
@@ -32,7 +26,7 @@ public class Document extends Node {
 	 * @return The root document element
 	 */
 	public Node getRoot() {
-		return new Node(this, path.getChildLiteral(getChildElements().get(0)));
+		return getOrderedChildElements().get(0);
 	}
 	
 	/**

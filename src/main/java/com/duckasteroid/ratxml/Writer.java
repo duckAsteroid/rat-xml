@@ -20,20 +20,17 @@ public class Writer {
 	
 	private XMLReader xmlReader;
 	private CdbMake cdb;
-	private boolean outputMetadata;
 	private boolean trimWhitespace;
 
 	/**
 	 * Create a writer to output Rat XML data 
 	 * @param outputFile A file where the Rat XML will be written. If this file exists it will be overwritten.
-	 * @param outputMetadata A flag to indicate if metadata is to be included in the output. This is required if XPath processing is to be performed later
 	 * @param trimWhitespace A flag to indicate if whitespace should be removed from the output. This also removes "empty" (whitespace only) elements from the output.
 	 * @throws IOException If there is a problem writing to the 
 	 */
-	public Writer(File outputFile, boolean outputMetadata, boolean trimWhitespace) throws IOException {
+	public Writer(File outputFile, boolean trimWhitespace) throws IOException {
 		this.cdb = new CdbMake();
 		this.cdb.start(outputFile);
-		this.outputMetadata = outputMetadata;
 		this.trimWhitespace = trimWhitespace;		
 	}
 	/**
@@ -48,7 +45,7 @@ public class Writer {
 	    //spf.setNamespaceAware(true);
 		SAXParser saxParser = spf.newSAXParser();
 		xmlReader = saxParser.getXMLReader();
-		xmlReader.setContentHandler(new SaxHandler(cdb, outputMetadata, trimWhitespace));
+		xmlReader.setContentHandler(new SaxHandler(cdb, trimWhitespace));
 		xmlReader.parse(xml);
 		
 	}

@@ -17,7 +17,7 @@ public class NodeTest extends TestCase {
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("countries.xml");
 		File cdbFile = new File("countries.cdb");
-		Writer writer = new Writer(cdbFile, true, true);
+		Writer writer = new Writer(cdbFile, true);
 		writer.write(new InputSource(stream));
 		
 		// read the rat-xml 
@@ -38,7 +38,7 @@ public class NodeTest extends TestCase {
 	
 	public void testGetChildren() {
 		subject = ratXml.getRoot();
-		Iterator<Node> children = subject.getChildren();
+		Iterator<Node> children = subject.getOrderedChildElements().iterator();
 		assertNotNull(children);
 		assertTrue(children.hasNext());
 		subject = children.next();

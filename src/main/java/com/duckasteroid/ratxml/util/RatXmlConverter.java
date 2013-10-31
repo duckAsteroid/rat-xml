@@ -25,7 +25,7 @@ public class RatXmlConverter {
 	 * @throws IOException If there is a problem reading the XML or writing the rat XML
 	 */
 	public static final void convert(File input, File output)  throws ParserConfigurationException, SAXException, IOException {
-		Writer w = new Writer(output, true, true);
+		Writer w = new Writer(output, true);
 		InputSource xml = new InputSource(new FileInputStream(input));
 		w.write(xml);
 	}

@@ -23,14 +23,14 @@ public class Navigator extends DefaultNavigator {
 	public Iterator<?> getAttributeAxisIterator(Object contextNode)
 			throws UnsupportedAxisException {
 		Node ctx = (Node)contextNode;
-		return ctx.getAttributes();
+		return ctx.getAttributes().values().iterator();
 	}
 	
 	@Override
 	public Iterator<?> getChildAxisIterator(Object contextNode)
 			throws UnsupportedAxisException {
 		Node ctx = (Node)contextNode;
-		return ctx.getChildren();
+		return ctx.getChildElements().values().iterator();
 	}
 	
 	@Override
