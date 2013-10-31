@@ -17,20 +17,47 @@ For example consider a simple XML file:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <contacts src="My Contacts">
-   <person id="j-smith">
+   <person id="j-smith" type="A">
       <name>John Smith</name>
       <email>js@foo.bar</email>
-   </person> 
+   </person>
+   <person id="i-brown">
+      <name>Ian Brown</name>
+   </person>
 </contacts>
 
 ```
 We would store the following element data:
 
-| Key                          | Data       |
-|------------------------------|------------|
-| /contacts[0]                 |            |
-| /contacts[0]/person[0]       |            |
-| /contacts[0]/person[0]/name  | John Smith |
-| /contacts[0]/person[0]/email | js@foo.bar |
+| Key                            | Data       |
+|--------------------------------|------------|
+| `/contacts[0]`                 |            |
+| `/contacts[0]/person[0]`       |            |
+| `/contacts[0]/person[0]/name`  | John Smith |
+| `/contacts[0]/person[0]/email` | js@foo.bar |
+| `/contacts[0]/person[1]`       |            |
+| `/contacts[0]/person[1]/name`  | Ian Brown  |
 
-We would store the following attribute data: 
+We would store the following attribute data:
+
+| Key                            | Data        |
+|--------------------------------|-------------|
+| `/contacts[0]@src`             | My Contacts |
+| `/contacts[0]/person[0]@id`    | j-smith     |
+| `/contacts[0]/person[0]@type`  | A           |
+| `/contacts[0]/person[1]@id`    | i-brown     |
+
+Finally to make traversal quicker (rather than searching keys) we store meta data about a child's elements (under the key `<path>#?children`) and attributes (under the key `<path>#?attrs` in special meta data keys. Continuing the example the following meta data would be stored:
+
+| Key                                | Data        |
+|------------------------------------|-------------|
+| `#?children`                       | contacts[0] |
+| `/contacts[0]#?children`           | person[0]   |
+| `/contacts[0]#?attrs`              | src         |
+| `/contacts[0]/person[0]#?attrs`    | id          |
+| `/contacts[0]/person[0]#?attrs`    | type        |
+| `/contacts[0]/person[1]#?attrs`    | id          |
+
+This format is fast/easy to access and does not involve large amounts of key searching when performing node traversal (parent:child, child:parent). But it does come at some cost. The size of the file. We duplicate paths a lot in the rat XML and that takes up a large (the largest) portion of the file. However, we do not load this into memory - we use a random access file and fancy pointers to load data (see the CDB file spec) to access data.
+
+Maybe one day I'll make it more efficient ...see the corresponding issue on GitHub for discussion of this topic.  
