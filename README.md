@@ -8,7 +8,7 @@ A file writer (and utilities) are provided for taking XML data and converting to
 The reader API then provides a kind-of lightweight DOM-esque API for traversing elements/attributes etc.
 
 ## The gory details...
-The key to Rat XML is the underlying file format which is simply a [CBD](http://cr.yp.to/cdb.html) file. CDB files are essentially hashtables that provide rapid file access to data stored in a key (two disk hits per read using the OS memory mapped random access file). If you want to know more about the internals of the CDB file format I recommend [this page](www.unixuser.org/~euske/doc/cdbinternals/)
+The key to Rat XML is the underlying file format which is simply a [CBD](http://cr.yp.to/cdb.html) file. CDB files are essentially hashtables that provide rapid file access to data stored in a key (two disk hits per read using the OS memory mapped random access file). If you want to know more about the internals of the CDB file format I recommend [this page](http://www.unixuser.org/~euske/doc/cdbinternals/)
 
 In RAT XML we store element & attribute data in the CDB table using a key that represents the "path" to that element or attribute. In addition we store meta data about the structure of the XML (what children an element has).
 
