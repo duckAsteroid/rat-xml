@@ -1,5 +1,6 @@
 package com.duckasteroid.ratxml;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,6 +71,34 @@ public class Node {
 		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
 			public void handle(String name, long id) {
 				children.put(name, new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+			}
+		});
+		return children;
+	}
+	
+	/**
+	 * A list of the elements with a given name (in the order they are declared)
+	 * @param elementName the name of the elements to get
+	 * @return A collection with the nodes in it (if any)
+	 */
+	public List<Node> getChildElements(String elementName) {
+		return new NodeList(elementName);
+	}
+	
+	/**
+	 * Returns a collection of all children - attributes and elements
+	 * @return A list of all children (attributes and elements)
+	 */
+	public List<Node> getAllChildren() {
+		final ArrayList<Node> children = new ArrayList<Node>();
+		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
+			public void handle(String name, long id) {
+				children.add(new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+			}
+		});
+		processMetaData(key.getAttributeMetaDataKey(), new MetaDataHandler() {
+			public void handle(String name, long id) {
+				children.add(new Node(cdb, Key.createAttributeDataKey(id), Node.this, name));
 			}
 		});
 		return children;
@@ -155,6 +184,50 @@ public class Node {
 	}
 
 	public String getAttributeValue(String key) {
-		return getAttributes().get(key).getText();
+		Node attr = getAttributes().get(key);
+		if (attr == null)
+		{
+			return null;
+		}
+		return attr.getText();
+	}
+	
+	private class NodeList extends AbstractList<Node>
+	{
+		private String elementName;
+		private Map<String, Node> elements;
+		private Integer size = null;
+		
+		public NodeList(String elementName)
+		{
+			this.elementName = elementName;
+			this.elements = getChildElements();
+		}
+		
+		@Override
+        public Node get(int index)
+        {
+	        return elements.get(elementName + "["+index+"]");
+        }
+
+		@Override
+        public synchronized int size()
+        {
+	        if (size == null)
+	        {
+	        	size = 0;
+	        	for(Map.Entry<String, Node> entry : elements.entrySet())
+	        	{
+	        		String keyName = entry.getKey();
+	        		keyName = keyName.substring(keyName.indexOf('['));
+	        		if (keyName.equals(elementName))
+	        		{
+	        			size ++;
+	        		}
+	        	}
+	        }
+	        return size;
+        }
+		
 	}
 }
