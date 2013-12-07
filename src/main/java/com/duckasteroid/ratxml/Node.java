@@ -219,7 +219,7 @@ public class Node {
 	        	for(Map.Entry<String, Node> entry : elements.entrySet())
 	        	{
 	        		String keyName = entry.getKey();
-	        		keyName = keyName.substring(keyName.indexOf('['));
+	        		keyName = keyName.substring(0,keyName.indexOf('['));
 	        		if (keyName.equals(elementName))
 	        		{
 	        			size ++;
