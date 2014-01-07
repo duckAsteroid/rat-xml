@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>rat-xml</name>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/duckAsteroid/rat-xml</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,4 +27,34 @@
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
+	<scm>
+		<url>https://github.com/duckAsteroid/rat-xml.git</url>
+		<connection>git@github.com:duckAsteroid/rat-xml.git</connection>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/duckAsteroid/rat-xml/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins (CloudBees)</system>
+		<url>https://duck-asteroid.ci.cloudbees.com/job/rat-xml/</url>
+	</ciManagement>
+	<description>Random Access Tiny XML</description>
+	<contributors>
+		<contributor>
+			<name>Chris Senior</name>
+		</contributor>
+		<contributor>
+			<name>Justin Lane</name>
+		</contributor>
+		<contributor>
+			<name>Chris Royce</name>
+		</contributor>
+	</contributors>
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
 </project>
