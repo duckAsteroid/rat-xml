@@ -99,4 +99,8 @@ Continuing the example the following meta data would be stored:
 
 The keys themselves are 9 bytes - 8 byte long and 1 byte for the "type" (A, E, #A, #E).
 
-This format is fast/easy to access and does not involve large amounts of key searching when performing node traversal (parent:child, child:parent). But it does come at some cost. The size of the file. We duplicate paths a lot in the rat XML and that takes up a large (the largest) portion of the file. However, we do not load this into memory - we use a random access file and fancy pointers to load data (see the CDB file spec) to access data.  
+This format is fast/easy to access and does not involve large amounts of key searching when performing node traversal (parent:child, child:parent). But it does come at some cost. The size of the file. We duplicate paths a lot in the rat XML and that takes up a large (the largest) portion of the file. However, we do not load this into memory - we use a random access file and fancy pointers to load data (see the CDB file spec) to access data.
+
+## About
+
+This project is built by CloudBees Jenkins.
