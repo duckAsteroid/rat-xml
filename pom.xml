@@ -59,5 +59,6 @@
 	</licenses>
 	<modules>
 		<module>rat-xml.core</module>
+		<module>cdb</module>
 	</modules>
 </project>

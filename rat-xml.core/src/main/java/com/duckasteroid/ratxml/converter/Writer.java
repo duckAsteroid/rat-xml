@@ -1,4 +1,4 @@
-package com.duckasteroid.ratxml;
+package com.duckasteroid.ratxml.converter;
 
 import java.io.File;
 import java.io.IOException;

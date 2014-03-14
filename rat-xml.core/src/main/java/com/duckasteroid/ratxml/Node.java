@@ -29,15 +29,17 @@ import com.strangegizmo.cdb.Cdb;
  */
 public class Node
 {
-
+	/** A reference to this nodes parent */
 	protected Node parent;
 
+	/** The CDB file that this node was loaded from */
 	protected Cdb cdb;
 
+	/** The key for this node in the CDB */
 	protected Key key;
 
+	/** The name of this node */
 	protected String name;
-
 
 	/**
 	 * Create the node in the given document and at the given path

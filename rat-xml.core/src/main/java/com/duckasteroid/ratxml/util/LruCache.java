@@ -5,8 +5,7 @@ import java.util.Map;
 
 /**
  * Code shamelessly taken from StackOverflow...
- * http://stackoverflow.com/questions
- * /221525/how-would-you-implement-an-lru-cache-in-java-6
+ * http://stackoverflow.com/questions/221525/how-would-you-implement-an-lru-cache-in-java-6
  * 
  * @param <A>
  *            Key class
@@ -26,20 +25,20 @@ public class LruCache<A, B> extends LinkedHashMap<A, B> {
      *            The maximum number of entries in the cache
      */
     public LruCache(final int maxEntries) {
-	super(maxEntries + 1, 1.0f, true);
-	setMaxEntries(maxEntries);
+		super(maxEntries + 1, 1.0f, true);
+		setMaxEntries(maxEntries);
     }
 
     public int getMaxEntries() {
-	return maxEntries;
+    	return maxEntries;
     }
 
     public void setMaxEntries(int maxEntries) {
-	if (maxEntries <= 0) {
-	    throw new IllegalArgumentException(
-		    "Cache max must be a positive integer (i.e. > 0)");
-	}
-	this.maxEntries = maxEntries;
+		if (maxEntries <= 0) {
+		    throw new IllegalArgumentException(
+			    "Cache max must be a positive integer (i.e. > 0)");
+		}
+		this.maxEntries = maxEntries;
     }
 
     /**
@@ -62,6 +61,6 @@ public class LruCache<A, B> extends LinkedHashMap<A, B> {
      */
     @Override
     protected boolean removeEldestEntry(final Map.Entry<A, B> eldest) {
-	return super.size() > maxEntries;
+    	return super.size() > maxEntries;
     }
 }

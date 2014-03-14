@@ -11,7 +11,7 @@ public class Key {
 	public static final byte TYPE_CHILD_ATTRIBUTES = 3;
 		
 	/** key data used in CDB */
-	byte[] value;
+	public byte[] value;
 	
 	private Key(long id, byte type) {
 		value = new byte[9];

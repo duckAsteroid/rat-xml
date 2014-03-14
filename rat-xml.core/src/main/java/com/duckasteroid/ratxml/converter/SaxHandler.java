@@ -1,4 +1,4 @@
-package com.duckasteroid.ratxml;
+package com.duckasteroid.ratxml.converter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.duckasteroid.ratxml.Key;
 import com.strangegizmo.cdb.CdbMake;
 
 /**

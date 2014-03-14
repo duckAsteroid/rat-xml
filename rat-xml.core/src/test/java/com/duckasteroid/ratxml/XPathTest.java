@@ -11,6 +11,7 @@ import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 import org.xml.sax.InputSource;
 
+import com.duckasteroid.ratxml.converter.Writer;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 
 public class XPathTest extends TestCase {

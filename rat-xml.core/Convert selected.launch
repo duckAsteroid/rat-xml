@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/rat-xml.core/src/main/java/com/duckasteroid/ratxml/util/RatXmlConverter.java"/>
+<listEntry value="/rat-xml.core/src/main/java/com/duckasteroid/ratxml/converter/RatXmlConverter.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -10,7 +10,7 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.duckasteroid.ratxml.util.RatXmlConverter"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.duckasteroid.ratxml.converter.RatXmlConverter"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="${selected_resource_loc}&#13;&#10;${selected_resource_loc}.cdb"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="rat-xml.core"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>

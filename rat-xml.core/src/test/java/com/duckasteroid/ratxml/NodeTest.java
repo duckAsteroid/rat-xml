@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 
 import org.xml.sax.InputSource;
 
+import com.duckasteroid.ratxml.converter.Writer;
+
 public class NodeTest extends TestCase {
 	private Document ratXml;
 	Node subject;

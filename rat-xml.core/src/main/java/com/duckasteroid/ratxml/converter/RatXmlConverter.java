@@ -1,4 +1,4 @@
-package com.duckasteroid.ratxml.util;
+package com.duckasteroid.ratxml.converter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,8 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.duckasteroid.ratxml.Writer;
 
 /**
  * A main class for taking an XML file and converting it to Rat XML
