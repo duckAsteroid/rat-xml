@@ -1,9 +1,8 @@
 package com.duckasteroid.ratxml;
 
-import java.io.File;
 import java.io.IOException;
 
-import com.strangegizmo.cdb.Cdb;
+import com.duckasteroid.ratxml.io.DataInput;
 
 /**
  * This class is used to read/parse a rat XML file.
@@ -14,11 +13,11 @@ public class Document extends Node {
 
 	/**
 	 * Create a rat XML document given a file to read data from
-	 * @param inputFile The rat XML file to read from
+	 * @param input The rat XML DB to read from
 	 * @throws IOException If there is a problem reading the rat XML file
 	 */
-	public Document(File inputFile) throws IOException {
-		super(new Cdb(inputFile), Key.createElementDataKey(0), null, null);
+	public Document(DataInput input) throws IOException {
+		super(input, Key.createElementDataKey(0), null, null);
 	}
 	
 	/**
@@ -33,7 +32,7 @@ public class Document extends Node {
 	 * Close this document, and the underlying file resources
 	 */
 	public void close() {
-		cdb.close();
+		input.close();
 	}
 	
 	@Override

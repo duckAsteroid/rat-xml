@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.strangegizmo.cdb.Cdb;
+import com.duckasteroid.ratxml.io.DataInput;
 
 /**
  * This represents the read interface to data in the rat-xml. It is something equivalent to the Node in DOM. It represents data in elements and attributes.
@@ -32,8 +32,8 @@ public class Node
 	/** A reference to this nodes parent */
 	protected Node parent;
 
-	/** The CDB file that this node was loaded from */
-	protected Cdb cdb;
+	/** The data input that this node was loaded from */
+	protected DataInput input;
 
 	/** The key for this node in the CDB */
 	protected Key key;
@@ -44,12 +44,13 @@ public class Node
 	/**
 	 * Create the node in the given document and at the given path
 	 * 
+	 * @param input The data input to load from
 	 * @param document The owner Rat XML document
 	 * @param path The path into the document
 	 */
-	public Node(Cdb cdb, Key key, Node parent, String name)
+	public Node(DataInput input, Key key, Node parent, String name)
 	{
-		this.cdb = cdb;
+		this.input = input;
 		this.parent = parent;
 		this.key = key;
 		this.name = name;
@@ -108,10 +109,9 @@ public class Node
 		final HashMap<String, Node> children = new HashMap<String, Node>();
 		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler()
 		{
-
 			public void handle(String name, long id)
 			{
-				children.put(name, new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+				children.put(name, new Node(input, Key.createElementDataKey(id), Node.this, name));
 			}
 		});
 		return children;
@@ -143,7 +143,7 @@ public class Node
 
 			public void handle(String name, long id)
 			{
-				children.add(new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+				children.add(new Node(input, Key.createElementDataKey(id), Node.this, name));
 			}
 		});
 		processMetaData(key.getAttributeMetaDataKey(), new MetaDataHandler()
@@ -151,7 +151,7 @@ public class Node
 
 			public void handle(String name, long id)
 			{
-				children.add(new Node(cdb, Key.createAttributeDataKey(id), Node.this, name));
+				children.add(new Node(input, Key.createAttributeDataKey(id), Node.this, name));
 			}
 		});
 		return children;
@@ -166,7 +166,7 @@ public class Node
 
 			public void handle(String name, long id)
 			{
-				children.add(new Node(cdb, Key.createElementDataKey(id), Node.this, name));
+				children.add(new Node(input, Key.createElementDataKey(id), Node.this, name));
 			}
 		});
 		if (children.size() > 1)
@@ -190,7 +190,7 @@ public class Node
 
 			public void handle(String name, long id)
 			{
-				Node n = new Node(cdb, Key.createAttributeDataKey(id), Node.this, name);
+				Node n = new Node(input, Key.createAttributeDataKey(id), Node.this, name);
 				result.put(name, n);
 			}
 		});
@@ -212,31 +212,11 @@ public class Node
 	 */
 	private void processMetaData(Key metaDataKey, MetaDataHandler handler)
 	{
-		String metaData = null;
-		byte[] b = null;
-		do
-		{
-			if (b == null)
-			{
-				b = cdb.find(metaDataKey.value);
-			}
-			else
-			{
-				b = cdb.findnext(metaDataKey.value);
-			}
-			if (b == null)
-			{
-				metaData = null;
-			}
-			else
-			{
-				metaData = new String(b);
-				String[] element = metaData.split(":");
-				handler.handle(element[0], Long.parseLong(element[1]));
-			}
+		List<String> metaData = input.getMetaData(metaDataKey);
+		for(String metaDataEntry : metaData) {
+			String[] meta = metaDataEntry.split(":");
+			handler.handle(meta[0], Long.parseLong(meta[1]));
 		}
-		while (metaData != null);
-
 	}
 
 
@@ -247,12 +227,7 @@ public class Node
 	 */
 	public String getText()
 	{
-		byte[] data = cdb.find(key.value);
-		if (data == null)
-		{
-			return "";
-		}
-		return new String(data);
+		return input.getText(key);
 	}
 
 

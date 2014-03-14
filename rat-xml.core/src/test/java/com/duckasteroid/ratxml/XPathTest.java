@@ -12,6 +12,7 @@ import org.jaxen.saxpath.SAXPathException;
 import org.xml.sax.InputSource;
 
 import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 
 public class XPathTest extends TestCase {
@@ -30,7 +31,8 @@ public class XPathTest extends TestCase {
 		writer.write(new InputSource(stream));
 		
 		// read the rat-xml 
-		ratXml = new Document(cdbFile);
+		CdbDataInputFactory factory = new CdbDataInputFactory();
+		ratXml = new Document(factory.create(cdbFile));
 	}
 	
 	@Override

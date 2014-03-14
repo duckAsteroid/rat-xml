@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import org.xml.sax.InputSource;
 
 import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 
 public class NodeTest extends TestCase {
 	private Document ratXml;
@@ -22,8 +23,9 @@ public class NodeTest extends TestCase {
 		Writer writer = new Writer(cdbFile, true);
 		writer.write(new InputSource(stream));
 		
-		// read the rat-xml 
-		ratXml = new Document(cdbFile);
+		// read the rat-xml
+		CdbDataInputFactory factory = new CdbDataInputFactory();
+		ratXml = new Document(factory.create(cdbFile));
 	}
 	
 	@Override

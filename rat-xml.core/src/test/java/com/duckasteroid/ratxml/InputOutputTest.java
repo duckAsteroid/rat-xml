@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,15 +12,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
-
-
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 
 public class InputOutputTest extends TestCase {
 
@@ -41,7 +38,8 @@ public class InputOutputTest extends TestCase {
 		domRoot.normalize();
 		
 		// now we open books.cdb
-		Document reader = new Document(cdbFile);
+		CdbDataInputFactory factory = new CdbDataInputFactory();
+		Document reader = new Document(factory.create(cdbFile));
 		
 		// test the metadata
 		Collection<Node> childElements = reader.getChildElements().values();

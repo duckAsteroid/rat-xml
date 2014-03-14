@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 /* strangeGizmo imports. */
 
+
 import com.strangegizmo.cdb.Cdb;
 import com.strangegizmo.cdb.CdbElement;
 
@@ -61,6 +62,7 @@ public class Dump {
 		
 		/* Dump the CDB file. */
 		try {
+			@SuppressWarnings("rawtypes")
 			Enumeration e = Cdb.elements(cdbFile);
 			while (e.hasMoreElements())  {
 				/* Get the element and its component parts. */
