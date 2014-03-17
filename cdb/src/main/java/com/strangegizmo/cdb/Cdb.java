@@ -128,6 +128,7 @@ public class Cdb {
 			file_.close();
 			file_ = null;
 		} catch (IOException ignored) {}
+		Statistics.instance.close();
 	}
 
 
@@ -188,6 +189,7 @@ public class Cdb {
 	 *  <code>null</code> if no record with that key could be found.
 	 */
 	public final synchronized byte[] findnext(byte[] key) {
+		Statistics.instance.recordIO();
 		/* There are no keys if we could not read the slot table. */
 		if (slotTable_ == null)
 			return null;
