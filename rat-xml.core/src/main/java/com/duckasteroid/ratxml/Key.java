@@ -72,4 +72,8 @@ public class Key {
 		return getTypeName() + ":" +getId();
 	}
 	
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
 }
