@@ -10,7 +10,7 @@ import com.strangegizmo.cdb.Cdb;
 public class CdbDataInputFactory implements DataInputFactory {
 
 	public DataInput create(File f) throws IOException {
-		return new CdbDataInput(new Cdb(f));
+		return new CdbDataInput(new Cdb(f), true);
 	}
 
 }

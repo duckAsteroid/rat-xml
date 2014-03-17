@@ -19,9 +19,16 @@ import org.xml.sax.SAXException;
 
 import com.duckasteroid.ratxml.converter.Writer;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.strangegizmo.cdb.Statistics;
 
 public class InputOutputTest extends TestCase {
+	private Document reader;
 
+	@Override
+	protected void setUp() throws Exception {
+		Statistics.instance = new StatisticsImpl(InputOutputTest.class.getName()+"."+getName());
+	}
+	
 	public void testBooks() throws ParserConfigurationException, SAXException, IOException {
 		// ok first up - we write books XML to books.cdb
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("books.xml");
@@ -39,7 +46,7 @@ public class InputOutputTest extends TestCase {
 		
 		// now we open books.cdb
 		CdbDataInputFactory factory = new CdbDataInputFactory();
-		Document reader = new Document(factory.create(cdbFile));
+		reader = new Document(factory.create(cdbFile));
 		
 		// test the metadata
 		Collection<Node> childElements = reader.getChildElements().values();
@@ -92,5 +99,10 @@ public class InputOutputTest extends TestCase {
 		src = src.replaceAll("\\n", " ");
 		src = src.replaceAll(" +", " ");
 		return src;
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		reader.close();
 	}
 }

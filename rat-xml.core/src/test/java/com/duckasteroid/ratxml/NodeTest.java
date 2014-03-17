@@ -10,6 +10,7 @@ import org.xml.sax.InputSource;
 
 import com.duckasteroid.ratxml.converter.Writer;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.strangegizmo.cdb.Statistics;
 
 public class NodeTest extends TestCase {
 	private Document ratXml;
@@ -17,6 +18,7 @@ public class NodeTest extends TestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
+		Statistics.instance = new StatisticsImpl(NodeTest.class.getName()+"."+getName());
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("countries.xml");
 		File cdbFile = new File("countries.cdb");

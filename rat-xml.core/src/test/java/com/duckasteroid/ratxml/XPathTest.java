@@ -14,6 +14,7 @@ import org.xml.sax.InputSource;
 import com.duckasteroid.ratxml.converter.Writer;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
+import com.strangegizmo.cdb.Statistics;
 
 public class XPathTest extends TestCase {
 	/** Selects just the single city element representing Manchester */
@@ -24,6 +25,7 @@ public class XPathTest extends TestCase {
 	private Document ratXml;
 	@Override
 	protected void setUp() throws Exception {
+		Statistics.instance = new StatisticsImpl(XPathTest.class.getName()+"."+getName());
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("countries.xml");
 		File cdbFile = new File("countries.cdb");
