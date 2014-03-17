@@ -41,6 +41,15 @@ public class Node {
 	/** The name of this node */
 	protected String name;
 
+	/** A cache of child elements */
+	private ArrayList<Node> childElements = null;
+
+	/** A cache of child attributes */
+	private HashMap<String, Node> childAttributes = null;
+
+	/** A cache of the text */
+	private String text = null;
+
 	/**
 	 * Create the node in the given document and at the given path
 	 * 
@@ -133,15 +142,17 @@ public class Node {
 	}
 
 	public synchronized List<Node> getOrderedChildElements() {
-		final ArrayList<Node> childElements = new ArrayList<Node>();
-		processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
-			public void handle(String name, long id) {
-				childElements.add(input.getNode(Key.createElementDataKey(id),
-						Node.this, name));
+		if (childElements == null) {
+			childElements = new ArrayList<Node>();
+			processMetaData(key.getChildMetaDataKey(), new MetaDataHandler() {
+				public void handle(String name, long id) {
+					childElements.add(input.getNode(
+							Key.createElementDataKey(id), Node.this, name));
+				}
+			});
+			if (childElements.size() > 1) {
+				Collections.reverse(childElements);
 			}
-		});
-		if (childElements.size() > 1) {
-			Collections.reverse(childElements);
 		}
 		return childElements;
 	}
@@ -154,15 +165,18 @@ public class Node {
 	 *         <code>null</code>.
 	 */
 	public synchronized Map<String, Node> getAttributes() {
-		final HashMap<String, Node> childAttributes = new HashMap<String, Node>();
-		processMetaData(key.getAttributeMetaDataKey(), new MetaDataHandler() {
-			public void handle(String name, long id) {
-				Node n = input.getNode(Key.createAttributeDataKey(id),
-						Node.this, name);
-				childAttributes.put(name, n);
-			}
-		});
-
+		if (childAttributes == null) {
+			childAttributes = new HashMap<String, Node>();
+			processMetaData(key.getAttributeMetaDataKey(),
+					new MetaDataHandler() {
+						public void handle(String name, long id) {
+							Node n = input.getNode(
+									Key.createAttributeDataKey(id), Node.this,
+									name);
+							childAttributes.put(name, n);
+						}
+					});
+		}
 		return childAttributes;
 	}
 
@@ -192,8 +206,9 @@ public class Node {
 	 * @return The text in this element
 	 */
 	public synchronized String getText() {
-		String text = input.getText(key);
-
+		if (text == null) {
+			text = input.getText(key);
+		}
 		return text;
 	}
 
