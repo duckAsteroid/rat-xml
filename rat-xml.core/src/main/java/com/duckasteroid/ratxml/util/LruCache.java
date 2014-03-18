@@ -13,7 +13,7 @@ import java.util.Map;
  *            Value class
  */
 public class LruCache<A, B> extends LinkedHashMap<A, B> {
-
+	
     private static final long serialVersionUID = 4230177758216129994L;
 
     private int maxEntries;

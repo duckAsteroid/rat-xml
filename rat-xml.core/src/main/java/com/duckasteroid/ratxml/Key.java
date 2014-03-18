@@ -1,10 +1,11 @@
 package com.duckasteroid.ratxml;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 /**
  * Represents a key value used in the CDB
  */
-public class Key {
+public class Key implements Comparable<Key> {
 	public static final byte TYPE_ELEMENT = 0;
 	public static final byte TYPE_ATTRIBUTE = 1;
 	public static final byte TYPE_CHILD_ELEMENTS = 2;
@@ -74,6 +75,21 @@ public class Key {
 	
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return Arrays.hashCode(value);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return hashCode() == obj.hashCode();
+	}
+	
+	public int compareTo(Key o) {
+		// a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+		int comparison = (int)(this.getId() - o.getId());
+		if (comparison == 0) {
+			comparison = this.getType() - o.getType();
+		}
+		return comparison;
+	}
+	
 }

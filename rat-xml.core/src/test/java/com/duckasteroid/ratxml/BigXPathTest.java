@@ -1,9 +1,12 @@
 package com.duckasteroid.ratxml;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -12,11 +15,26 @@ import org.jaxen.saxpath.SAXPathException;
 import org.xml.sax.InputSource;
 
 import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.io.impl.CdbDataInput;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 import com.strangegizmo.cdb.Statistics;
 
 public class BigXPathTest extends TestCase {
+	
+	static {
+		final InputStream inputStream = BigXPathTest.class.getResourceAsStream("/debug.logging.properties");
+		try
+		{
+		    LogManager.getLogManager().readConfiguration(inputStream);
+		}
+		catch (final IOException e)
+		{
+		    Logger.getAnonymousLogger().severe("Could not load default logging.properties file");
+		    Logger.getAnonymousLogger().severe(e.getMessage());
+		}
+	}
+	
 	/** Selects all citations created year > 200 */
 	public static final String SELECT_CITATIONS = "MedlineCitationSet/MedlineCitation[DateCreated/Year>%s]";
 	/** The rat XML document */
@@ -31,7 +49,9 @@ public class BigXPathTest extends TestCase {
 		writer.write(new InputSource(stream));
 		// read the rat-xml 
 		CdbDataInputFactory factory = new CdbDataInputFactory();
-		medSamp2014 = new Document(factory.create(cdbFile));
+		CdbDataInput dataInput = (CdbDataInput) factory.create(cdbFile);
+		dataInput.setCacheMaxSize(20000);
+		medSamp2014 = new Document(dataInput);
 	}
 	
 	@Override
@@ -41,7 +61,7 @@ public class BigXPathTest extends TestCase {
 	}
 	
 	public void testAdvancedXPaths() throws SAXPathException {
-		int expected = 103;
+		int expected = 70;
 		for (int i=2000; i < 2014; i++) {
 			String xPathString = String.format(SELECT_CITATIONS, i);
 			XPath xPath = new RatXPath(xPathString);
