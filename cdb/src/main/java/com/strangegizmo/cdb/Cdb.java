@@ -303,7 +303,7 @@ public class Cdb {
 	 * @exception java.io.IOException if an error occurs reading the
 	 *  constant database.
 	 */
-	public static Enumeration elements(final String filepath)
+	public static CdbElementEnumeration elements(final String filepath)
 		throws IOException
 	{
 		/* Open the data file. */
@@ -322,7 +322,8 @@ public class Cdb {
 		in.skip(2048 - 4);
 
 		/* Return the Enumeration. */
-		return new Enumeration() {
+		// @SuppressWarnings("resource")
+		return new CdbElementEnumeration() {
 			/* Current data pointer. */
 			int pos = 2048;
 
@@ -340,7 +341,7 @@ public class Cdb {
 			}
 
 			/* Returns the next data element in the CDB file. */
-			public synchronized Object nextElement() {
+			public synchronized CdbElement nextElement() {
 				try {
 					/* Read the key and value lengths. */
 					int klen = readLeInt(); pos += 4;
@@ -383,6 +384,10 @@ public class Cdb {
 					| ((in.read() & 0xff) <<  8)
 					| ((in.read() & 0xff) << 16)
 					| ((in.read() & 0xff) << 24);
+			}
+			
+			public void close() throws IOException {
+				in.close();
 			}
 		};
 	}

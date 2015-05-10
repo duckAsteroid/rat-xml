@@ -14,13 +14,18 @@ import junit.framework.TestCase;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.converter.RatXmlConverter;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.strangegizmo.cdb.Statistics;
 
+/**
+ * This class tests the creation of a RAT-XML file from an XML sample.
+ * The resulting RAT-XML is then loaded and compared with the DOM of the original XML.
+ * 
+ * @author Chris
+ */
 public class InputOutputTest extends TestCase {
 	private Document reader;
 
@@ -33,8 +38,7 @@ public class InputOutputTest extends TestCase {
 		// ok first up - we write books XML to books.cdb
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("books.xml");
 		File cdbFile = new File("books.cdb");
-		Writer writer = new Writer(cdbFile, false);
-		writer.write(new InputSource(stream));
+		RatXmlConverter.convert(stream, cdbFile, false);
 		
 		// now we open books.xml again for DOM
 		stream = getClass().getClassLoader().getResourceAsStream("books.xml");

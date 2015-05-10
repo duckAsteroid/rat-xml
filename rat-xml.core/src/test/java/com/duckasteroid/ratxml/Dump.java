@@ -38,8 +38,10 @@ import java.util.Enumeration;
 /* strangeGizmo imports. */
 
 
+
 import com.strangegizmo.cdb.Cdb;
 import com.strangegizmo.cdb.CdbElement;
+import com.strangegizmo.cdb.CdbElementEnumeration;
 
 /**
  * The cdb.dump program is a command-line tool which is used to dump the
@@ -61,9 +63,9 @@ public class Dump {
 		String cdbFile = args[0];
 		
 		/* Dump the CDB file. */
+		CdbElementEnumeration e = null;
 		try {
-			@SuppressWarnings("rawtypes")
-			Enumeration e = Cdb.elements(cdbFile);
+			e = Cdb.elements(cdbFile);
 			while (e.hasMoreElements())  {
 				/* Get the element and its component parts. */
 				CdbElement element = (CdbElement)e.nextElement();
@@ -85,6 +87,12 @@ public class Dump {
 		} catch (IOException ioException) {
 			System.out.println("Couldn't dump CDB file: "
 				+ ioException);
+		} finally {
+			if (e != null) {
+				try {
+					e.close();
+				} catch (IOException ignored) { }
+			}
 		}
 	}
 }

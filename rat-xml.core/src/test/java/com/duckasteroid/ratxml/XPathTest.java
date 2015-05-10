@@ -9,13 +9,18 @@ import junit.framework.TestCase;
 
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
-import org.xml.sax.InputSource;
 
-import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.converter.RatXmlConverter;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 import com.strangegizmo.cdb.Statistics;
 
+/**
+ * This class is a simple test of the XPath API using a simple XML file.
+ * The RAT-XML is generated from 'countries.xml' during setup.
+ * 
+ * @author Chris
+ */
 public class XPathTest extends TestCase {
 	/** Selects just the single city element representing Manchester */
 	public static final String SELECT_MANCHESTER = "//world/continent/country/city[name='Manchester']";
@@ -29,9 +34,7 @@ public class XPathTest extends TestCase {
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("countries.xml");
 		File cdbFile = new File("countries.cdb");
-		Writer writer = new Writer(cdbFile, true);
-		writer.write(new InputSource(stream));
-		
+		RatXmlConverter.convert(stream, cdbFile, false);
 		// read the rat-xml 
 		CdbDataInputFactory factory = new CdbDataInputFactory();
 		ratXml = new Document(factory.create(cdbFile));

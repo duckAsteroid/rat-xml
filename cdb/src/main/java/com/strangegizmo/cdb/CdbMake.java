@@ -56,7 +56,7 @@ public final class CdbMake {
 
 	/** The list of hash pointers in the file, in their order in the
 	 * constant database. */
-	private Vector hashPointers_ = null;
+	private Vector<CdbHashPointer> hashPointers_ = null;
 
 	/** The number of entries in each hash table. */
 	private int[] tableCount_ = null;
@@ -85,7 +85,7 @@ public final class CdbMake {
 	 */
 	public void start(File file) throws IOException {
 		/* Initialize the class. */
-		hashPointers_ = new Vector();
+		hashPointers_ = new Vector<CdbHashPointer>();
 		tableCount_ = new int[256];
 		tableStart_ = new int[256];
 
@@ -154,8 +154,8 @@ public final class CdbMake {
 		/* Create a new hash pointer list in order by hash table. */
 		CdbHashPointer[] slotPointers
 			= new CdbHashPointer[hashPointers_.size()];
-		for (Enumeration e = hashPointers_.elements(); e.hasMoreElements(); ) {
-			CdbHashPointer hp = (CdbHashPointer)e.nextElement();
+		for (Enumeration<CdbHashPointer> e = hashPointers_.elements(); e.hasMoreElements(); ) {
+			CdbHashPointer hp = e.nextElement();
 			slotPointers[--tableStart_[hp.hash & 0xff]] = hp;
 		}
 

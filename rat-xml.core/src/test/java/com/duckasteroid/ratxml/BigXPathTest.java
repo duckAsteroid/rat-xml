@@ -12,9 +12,8 @@ import junit.framework.TestCase;
 
 import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
-import org.xml.sax.InputSource;
 
-import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.converter.RatXmlConverter;
 import com.duckasteroid.ratxml.io.impl.CdbDataInput;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
@@ -45,8 +44,7 @@ public class BigXPathTest extends TestCase {
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("medsamp2014.xml");
 		File cdbFile = new File("medsamp2014.cdb");
-		Writer writer = new Writer(cdbFile, true);
-		writer.write(new InputSource(stream));
+		RatXmlConverter.convert(stream, cdbFile, false);
 		// read the rat-xml 
 		CdbDataInputFactory factory = new CdbDataInputFactory();
 		CdbDataInput dataInput = (CdbDataInput) factory.create(cdbFile);

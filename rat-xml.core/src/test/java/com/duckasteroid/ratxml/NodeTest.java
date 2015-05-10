@@ -6,12 +6,15 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.xml.sax.InputSource;
-
-import com.duckasteroid.ratxml.converter.Writer;
+import com.duckasteroid.ratxml.converter.RatXmlConverter;
 import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
 import com.strangegizmo.cdb.Statistics;
-
+/**
+ * This class is a simple test of the Node API - using a simple XML file as source.
+ * RAT-XML file is generated from the XML during setup.
+ * 
+ * @author Chris
+ */
 public class NodeTest extends TestCase {
 	private Document ratXml;
 	Node subject;
@@ -22,8 +25,7 @@ public class NodeTest extends TestCase {
 		// convert countries XML to RAT-XML
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("countries.xml");
 		File cdbFile = new File("countries.cdb");
-		Writer writer = new Writer(cdbFile, true);
-		writer.write(new InputSource(stream));
+		RatXmlConverter.convert(stream, cdbFile, false);
 		
 		// read the rat-xml
 		CdbDataInputFactory factory = new CdbDataInputFactory();
