@@ -303,6 +303,7 @@ public class Cdb {
 	 * @exception java.io.IOException if an error occurs reading the
 	 *  constant database.
 	 */
+	@SuppressWarnings("resource")
 	public static CdbElementEnumeration elements(final String filepath)
 		throws IOException
 	{
@@ -322,8 +323,8 @@ public class Cdb {
 		in.skip(2048 - 4);
 
 		/* Return the Enumeration. */
-		// @SuppressWarnings("resource")
-		return new CdbElementEnumeration() {
+		@SuppressWarnings("resource")
+		CdbElementEnumeration enumeration = new CdbElementEnumeration() {
 			/* Current data pointer. */
 			int pos = 2048;
 
@@ -390,5 +391,6 @@ public class Cdb {
 				in.close();
 			}
 		};
+		return enumeration;
 	}
 }

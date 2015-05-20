@@ -7,7 +7,7 @@ import java.util.Map;
  * Code shamelessly taken from StackOverflow...
  * http://stackoverflow.com/questions/221525/how-would-you-implement-an-lru-cache-in-java-6
  * 
- * An LRU cache stores the N most recently used items in it. Adding new items (beyond N) cause the eldest
+ * An LRU cache stores the N most recently used items in it. Adding new items (beyond N) causes the eldest
  * items to be dropped.
  * 
  * @param <A>

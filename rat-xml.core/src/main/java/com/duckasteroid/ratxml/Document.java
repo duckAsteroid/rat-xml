@@ -7,7 +7,7 @@ import com.duckasteroid.ratxml.io.DataInput;
 /**
  * This class is used to read/parse a rat XML file.
  * <b>WARNING:</b> This class maintains an open connection to the file while in use, 
- * and must be therefore <b>explicitly</b> {@link #close() closed}!
+ * and must therefore be <b>explicitly</b> {@link #close() closed}!
  */
 public class Document extends Node {
 

@@ -11,6 +11,10 @@ import com.duckasteroid.ratxml.io.DataInput;
 import com.duckasteroid.ratxml.util.LruCache;
 import com.strangegizmo.cdb.Cdb;
 
+/**
+ * A data input that uses the CDB file as a backing store.
+ * Optionally uses and LRU memory cache to improve performance.
+ */
 public class CdbDataInput implements DataInput {
 	/** Logging */
 	private final static Logger LOGGER = Logger.getLogger(CdbDataInput.class
@@ -26,10 +30,9 @@ public class CdbDataInput implements DataInput {
 	public CdbDataInput(Cdb cdb, boolean useCache) {
 		this.cdb = cdb;
 		if (useCache) {
-			metaDataCache = new LruCache<Key, List<String>>(Integer.getInteger(
-					CACHE_SIZE_PROPERTY_NAME, DEFAULT_CACHE_SIZE));
-			nodeCache = new LruCache<Key, Node>(Integer.getInteger(
-					CACHE_SIZE_PROPERTY_NAME, DEFAULT_CACHE_SIZE));
+			int cacheSize = Integer.getInteger(CACHE_SIZE_PROPERTY_NAME, DEFAULT_CACHE_SIZE);
+			metaDataCache = new LruCache<Key, List<String>>(cacheSize);
+			nodeCache = new LruCache<Key, Node>(cacheSize);
 		} else if (LOGGER.isLoggable(Level.WARNING)) {
 			LOGGER.warning("No cache enabled for " + cdb);
 		}

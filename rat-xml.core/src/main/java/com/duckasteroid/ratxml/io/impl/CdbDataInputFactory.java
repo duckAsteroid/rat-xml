@@ -7,8 +7,15 @@ import com.duckasteroid.ratxml.io.DataInput;
 import com.duckasteroid.ratxml.io.DataInputFactory;
 import com.strangegizmo.cdb.Cdb;
 
+/**
+ * A factory for CDB file data input
+ * @author Chris
+ */
 public class CdbDataInputFactory implements DataInputFactory {
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public DataInput create(File f) throws IOException {
 		return new CdbDataInput(new Cdb(f), true);
 	}

@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.duckasteroid.ratxml.Key;
 import com.duckasteroid.ratxml.Node;
-
+/**
+ * A RAT-XML data input
+ */
 public interface DataInput {
 	public Node getNode(Key childKey, Node parent, String name);
 	public String getText(Key key);
