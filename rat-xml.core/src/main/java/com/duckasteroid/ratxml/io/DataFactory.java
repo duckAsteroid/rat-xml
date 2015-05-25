@@ -6,6 +6,7 @@ import java.io.IOException;
  * Factory API for creating DataInput from a file
  * @author Chris
  */
-public interface DataInputFactory {
-	public DataInput create(File f) throws IOException;
+public interface DataFactory {
+	public DataInput createInput(File f) throws IOException;
+	public DataOutput createOutput(File f) throws IOException;
 }

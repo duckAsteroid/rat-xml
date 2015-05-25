@@ -1,57 +1,24 @@
-/*
- * Copyright (c) 2000-2006, Michael Alyn Miller <malyn@strangeGizmo.com>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice unmodified, this list of conditions, and the following
- *    disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of Michael Alyn Miller nor the names of the
- *    contributors to this software may be used to endorse or promote
- *    products derived from this software without specific prior written
- *    permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-
 package com.duckasteroid.ratxml;
 
-/* Java imports. */
+import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-/* strangeGizmo imports. */
-
-
+import java.util.ArrayList;
+import java.util.List;
 
 import com.strangegizmo.cdb.Cdb;
-import com.strangegizmo.cdb.CdbElement;
-import com.strangegizmo.cdb.CdbElementEnumeration;
+
 
 /**
- * The cdb.dump program is a command-line tool which is used to dump the
- * values stored in a constant database.
- *
- * @author		Michael Alyn Miller <malyn@strangeGizmo.com>
- * @version		1.0.4
+ * A revised rat-xml specific dump utility
  */
 public class Dump {
-	public static void main(String[] args) {
+	private Cdb cdb;
+	
+	public Dump(Cdb cdb) {
+		this.cdb = cdb;
+	}
+	
+	public static void main(String[] args) throws IOException {
 		/* Display a usage message if we didn't get the correct number
 		 * of arguments. */
 		if (args.length != 1) {
@@ -61,38 +28,62 @@ public class Dump {
 
 		/* Decode our arguments. */
 		String cdbFile = args[0];
+		File file = new File(cdbFile);
 		
-		/* Dump the CDB file. */
-		CdbElementEnumeration e = null;
-		try {
-			e = Cdb.elements(cdbFile);
-			while (e.hasMoreElements())  {
-				/* Get the element and its component parts. */
-				CdbElement element = (CdbElement)e.nextElement();
-				byte[] key = element.getKey();
-				byte[] data = element.getData();
+		Dump dump = new Dump(new Cdb(file));
+		
+		Key key = Key.createElementDataKey(0);
+		
+		String out = dump.dumpKey(key);
+		System.out.println(out);
+	}
 
-				/* Write the line directly to stdout to avoid any
-				 * charset conversion that System.print() might want to
-				 * perform. */
-				System.out.write(
-					("+" + key.length + "," + data.length + ":").getBytes());
-				System.out.write(new Key(key).toString().getBytes());
-				System.out.write('-');
-				System.out.write('>');
-				System.out.write(data);
-				System.out.write('\n');
-			}
-			System.out.write('\n');
-		} catch (IOException ioException) {
-			System.out.println("Couldn't dump CDB file: "
-				+ ioException);
-		} finally {
-			if (e != null) {
-				try {
-					e.close();
-				} catch (IOException ignored) { }
-			}
+	public String dumpKey(Key key) {
+		StringBuilder s = new StringBuilder();
+		appendKey(s, key);
+		return s.toString();
+	}
+	
+	public void appendKey(StringBuilder s, Key key) {
+		List<String> allData = data(key);
+		if (allData.isEmpty()) {
+			s.append(key.toString()).append(':').append("[EMPTY]").append('\n');
 		}
+		for(String entry : allData) {
+			s.append(key.toString()).append(':').append(new String(entry)).append('\n');
+		}
+		switch (key.getType()) {
+			case Key.TYPE_ELEMENT :
+				Key attr = key.getAttributeMetaDataKey();
+				appendKey(s, attr);
+				Key children = key.getChildMetaDataKey();
+				appendKey(s, children);
+				break;
+			default:
+			case Key.TYPE_ATTRIBUTE :
+				break;
+			case Key.TYPE_CHILD_ATTRIBUTES :
+				List<MetaData> attrMetaData = MetaData.parse(allData);
+				for(MetaData m : attrMetaData) {
+					appendKey(s, Key.createAttributeDataKey(m.getId()));
+				}
+				break;
+			case Key.TYPE_CHILD_ELEMENTS :
+				List<MetaData> childMetaData = MetaData.parse(allData);
+				for(MetaData m : childMetaData) {
+					appendKey(s, Key.createElementDataKey(m.getId()));
+				}
+				break;
+		}
+	}
+	
+	public List<String> data(Key key) {
+		ArrayList<String> result = new ArrayList<String>(2);
+		byte[] data = cdb.find(key.asBytes());
+		while(data != null) {
+			result.add(new String(data));
+			data = cdb.findnext(key.asBytes());
+		}
+		return result;
 	}
 }

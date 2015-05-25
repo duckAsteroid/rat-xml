@@ -1,5 +1,9 @@
 package com.duckasteroid.ratxml;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 /**
@@ -9,7 +13,8 @@ import java.util.Arrays;
  * 8 bytes the Long identifier of the node
  * 1 byte the node type
  */
-public class Key implements Comparable<Key> {
+public class Key implements Comparable<Key>, Externalizable {
+	
 	/** type identifier for an XML element */
 	public static final byte TYPE_ELEMENT = 0;
 	/** type identifier for an XML attribute */
@@ -20,7 +25,7 @@ public class Key implements Comparable<Key> {
 	public static final byte TYPE_CHILD_ATTRIBUTES = 3;
 		
 	/** key data used in CDB */
-	public byte[] value;
+	private byte[] value;
 	
 	/** Create a key with the given ID and type */
 	private Key(long id, byte type) {
@@ -36,6 +41,7 @@ public class Key implements Comparable<Key> {
 	public Key(byte[] data) {
 		this.value = data;
 	}
+
 	/**
 	 * Get the raw 9 byte key value as a ByteBuffer
 	 * @return A ByteBuffer that wraps the key value (note this buffer is modifiable)
@@ -149,5 +155,20 @@ public class Key implements Comparable<Key> {
 		}
 		return comparison;
 	}
+	
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		// make sure value is ready to read into
+		value = new byte[9]; 
+		in.readFully(value);
+	}
+	
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.write(value);
+	}
+	
+	public byte[] asBytes() {
+		return value;
+	}	
 	
 }

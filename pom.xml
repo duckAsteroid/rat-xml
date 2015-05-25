@@ -60,6 +60,7 @@
 	<modules>
 		<module>rat-xml.core</module>
 		<module>cdb</module>
-		
+
+		<module>rat-xml.cdb</module>
 	</modules>
 </project>

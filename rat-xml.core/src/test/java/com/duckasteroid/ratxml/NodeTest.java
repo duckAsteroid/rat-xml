@@ -7,7 +7,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import com.duckasteroid.ratxml.converter.RatXmlConverter;
-import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.duckasteroid.ratxml.io.impl.CdbDataFactory;
 import com.strangegizmo.cdb.Statistics;
 /**
  * This class is a simple test of the Node API - using a simple XML file as source.
@@ -28,8 +28,8 @@ public class NodeTest extends TestCase {
 		RatXmlConverter.convert(stream, cdbFile, false);
 		
 		// read the rat-xml
-		CdbDataInputFactory factory = new CdbDataInputFactory();
-		ratXml = new Document(factory.create(cdbFile));
+		CdbDataFactory factory = new CdbDataFactory();
+		ratXml = new Document(factory.createInput(cdbFile));
 	}
 	
 	@Override

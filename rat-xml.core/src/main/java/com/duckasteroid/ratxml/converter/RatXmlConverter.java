@@ -13,6 +13,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import com.duckasteroid.ratxml.io.impl.CdbDataOutput;
 import com.strangegizmo.cdb.CdbMake;
 
 /**
@@ -82,12 +83,13 @@ public class RatXmlConverter {
 		// create the CDB file
 		CdbMake cdb = new CdbMake();
 		cdb.start(output);
+		CdbDataOutput dataOutput = new CdbDataOutput(cdb);
 		// open the XML file
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		// spf.setNamespaceAware(true);
 		SAXParser saxParser = spf.newSAXParser();
 		XMLReader xmlReader = saxParser.getXMLReader();
-		xmlReader.setContentHandler(new SaxHandler(cdb, trimWhitespace));
+		xmlReader.setContentHandler(new SaxHandler(dataOutput, trimWhitespace));
 		xmlReader.parse(xml);
 	}
 

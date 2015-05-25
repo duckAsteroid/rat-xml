@@ -30,8 +30,9 @@ public class Document extends Node {
 	
 	/**
 	 * Close this document, and the underlying file resources
+	 * @throws IOException 
 	 */
-	public void close() {
+	public void close() throws IOException {
 		input.close();
 	}
 	

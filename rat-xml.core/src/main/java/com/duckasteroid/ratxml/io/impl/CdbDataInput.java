@@ -48,7 +48,7 @@ public class CdbDataInput implements DataInput {
 	}
 
 	public String getText(Key key) {
-		byte[] data = cdb.find(key.value);
+		byte[] data = cdb.find(key.asBytes());
 		String result;
 		if (data == null) {
 			return result = "";
@@ -78,9 +78,9 @@ public class CdbDataInput implements DataInput {
 		String metaData = null;
 		do {
 			if (b == null) {
-				b = cdb.find(key.value);
+				b = cdb.find(key.asBytes());
 			} else {
-				b = cdb.findnext(key.value);
+				b = cdb.findnext(key.asBytes());
 			}
 			if (b == null) {
 				metaData = null;

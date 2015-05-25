@@ -11,7 +11,7 @@ import org.jaxen.XPath;
 import org.jaxen.saxpath.SAXPathException;
 
 import com.duckasteroid.ratxml.converter.RatXmlConverter;
-import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.duckasteroid.ratxml.io.impl.CdbDataFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 import com.strangegizmo.cdb.Statistics;
 
@@ -36,8 +36,8 @@ public class XPathTest extends TestCase {
 		File cdbFile = new File("countries.cdb");
 		RatXmlConverter.convert(stream, cdbFile, false);
 		// read the rat-xml 
-		CdbDataInputFactory factory = new CdbDataInputFactory();
-		ratXml = new Document(factory.create(cdbFile));
+		CdbDataFactory factory = new CdbDataFactory();
+		ratXml = new Document(factory.createInput(cdbFile));
 	}
 	
 	@Override

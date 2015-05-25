@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.duckasteroid.ratxml.converter.RatXmlConverter;
-import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.duckasteroid.ratxml.io.impl.CdbDataFactory;
 import com.strangegizmo.cdb.Statistics;
 
 /**
@@ -49,8 +49,8 @@ public class InputOutputTest extends TestCase {
 		domRoot.normalize();
 		
 		// now we open books.cdb
-		CdbDataInputFactory factory = new CdbDataInputFactory();
-		reader = new Document(factory.create(cdbFile));
+		CdbDataFactory factory = new CdbDataFactory();
+		reader = new Document(factory.createInput(cdbFile));
 		
 		// test the metadata
 		Collection<Node> childElements = reader.getChildElements().values();

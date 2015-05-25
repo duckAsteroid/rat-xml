@@ -15,7 +15,7 @@ import org.jaxen.saxpath.SAXPathException;
 
 import com.duckasteroid.ratxml.converter.RatXmlConverter;
 import com.duckasteroid.ratxml.io.impl.CdbDataInput;
-import com.duckasteroid.ratxml.io.impl.CdbDataInputFactory;
+import com.duckasteroid.ratxml.io.impl.CdbDataFactory;
 import com.duckasteroid.ratxml.xpath.RatXPath;
 import com.strangegizmo.cdb.Statistics;
 
@@ -46,8 +46,8 @@ public class BigXPathTest extends TestCase {
 		File cdbFile = new File("medsamp2014.cdb");
 		RatXmlConverter.convert(stream, cdbFile, false);
 		// read the rat-xml 
-		CdbDataInputFactory factory = new CdbDataInputFactory();
-		CdbDataInput dataInput = (CdbDataInput) factory.create(cdbFile);
+		CdbDataFactory factory = new CdbDataFactory();
+		CdbDataInput dataInput = (CdbDataInput) factory.createInput(cdbFile);
 		dataInput.setCacheMaxSize(20000);
 		medSamp2014 = new Document(dataInput);
 	}

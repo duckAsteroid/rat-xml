@@ -12,6 +12,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.duckasteroid.ratxml.Data;
 import com.duckasteroid.ratxml.Key;
+import com.duckasteroid.ratxml.io.DataOutput;
 import com.strangegizmo.cdb.CdbMake;
 
 /**
@@ -22,7 +23,7 @@ class SaxHandler extends DefaultHandler {
 	/** Logger for debug */
 	private final static Logger LOG = Logger.getLogger(SaxHandler.class.getName()); 
 	/** A CDB make instance we will write XML key pairs to */
-	private CdbMake cdb;
+	private DataOutput dataOutput;
 	
 	/**
 	 * This map is used to track counts of elements by their ID.
@@ -50,13 +51,11 @@ class SaxHandler extends DefaultHandler {
 	 * Create the handler to write to the given CdbMake. This CDB make object
 	 * should already be initialised via {@link CdbMake#start(java.io.File)}
 	 * 
-	 * @param cdb
-	 *            The CDB make object we will write to
-	 * @param outputMetadata
+	 * @param data The output object we will write to
 	 * @param trimWhitespace 
 	 */
-	public SaxHandler(CdbMake cdb, boolean trimWhitespace) {
-		this.cdb = cdb;
+	public SaxHandler(DataOutput data, boolean trimWhitespace) {
+		this.dataOutput = data;
 		this.trimWhitespace = trimWhitespace;
 	}
 
@@ -102,7 +101,7 @@ class SaxHandler extends DefaultHandler {
 			// write metadata about this new element onto the parent element
 			Key metaKey = parent.getChildMetaDataKey();
 			// data describing that the Nth element element with name qName is @ID = id
-			cdb.add(metaKey.value, Data.createChildElementData(qName, count, elementId));
+			dataOutput.put(metaKey, Data.createChildElementData(qName, count, elementId));
 		} catch (IOException e) {
 			throw new SAXException(e);
 		}	
@@ -124,11 +123,11 @@ class SaxHandler extends DefaultHandler {
 				// get the value of the attribute
 				String value = attributes.getValue(i);
 				// write the attribute data to the CDB file
-				cdb.add(attr.value, value.getBytes());
+				dataOutput.put(attr, value.getBytes());
 				
 				// record meta data for attribute names
 				Key attrMetaDataKey = elementKey.getAttributeMetaDataKey();
-				cdb.add(attrMetaDataKey.value, Data.createChildAttributeData(attributes.getQName(i), attrId));
+				dataOutput.put(attrMetaDataKey, Data.createChildAttributeData(attributes.getQName(i), attrId));
 			}
 		} catch (IOException e) {
 			throw new SAXException(e);
@@ -184,7 +183,7 @@ class SaxHandler extends DefaultHandler {
 		// write the text data for the element
 		if (s.length() > 0) {
 			try {
-				cdb.add(key.value, s.getBytes());
+				dataOutput.put(key, s.getBytes());
 			} catch (IOException e) {
 				throw new SAXException(e);
 			}
@@ -200,7 +199,7 @@ class SaxHandler extends DefaultHandler {
 	public void endDocument() throws SAXException {
 		// write the CDB file
 		try {
-			cdb.finish();
+			dataOutput.close();
 		} catch (IOException e) {
 			throw new SAXException(e);
 		}
